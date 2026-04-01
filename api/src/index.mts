@@ -1,0 +1,14 @@
+import express, { json } from "express";
+import { createServer } from "node:http";
+import { Server } from "socket.io";
+import cors from "cors";
+//import type { Message } from "@sebastiantegel/edutypes";
+import { config } from "dotenv";
+import mongoose from "mongoose";
+//import Chat from "./models/chatSchema.mjs";
+//import registerRouter from "./routes/register.mjs";
+//import { loginRouter } from "./routes/login.mjs";
+import cookieParser from "cookie-parser";
+import cookie from "cookie";
+import jwt from "jsonwebtoken";
+//import type { UserDto } from "./models/userDto.mjs";
