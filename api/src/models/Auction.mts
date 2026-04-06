@@ -2,8 +2,8 @@ import mongoose, { InferSchemaType, model, Schema } from "mongoose";
 import { AuctionDto } from "../DTOs/AuctionDTO.mts";
 import { BidDTO } from "../DTOs/BidDTO.mts";
 import { BidderDTO } from "../DTOs/BidderDTO.mts";
-import { BidderSchema } from "./Bidder.mts";
-import { BidSchema } from "./Bid.mts";
+//import { BidderSchema } from "./Bidder.mts";
+//import { BidSchema } from "./Bid.mts";
 
 export const auctionSchema = new Schema(
   {
@@ -30,7 +30,7 @@ const Auction = model("Auction", auctionSchema);
 export default Auction;
 type AuctionDbType = InferSchemaType<typeof auctionSchema>;
 
-/*export const convertToAuctionDTO = (auction: AuctionDbType): AuctionDto => {
+export const convertToAuctionDTO = (auction: AuctionDbType): AuctionDto => {
   return {
     title: auction.title,
     description: auction.description,
@@ -40,12 +40,12 @@ type AuctionDbType = InferSchemaType<typeof auctionSchema>;
     highestBidder: auction.highestBidder,
     endTime: auction.endTime,
     status: auction.status,
-    bids: auction.bids.map((bid) => {
+    bids: auction.bids.map((bid: BidDTO) => {
       return {
         amount: bid.amount,
         bidder: bid.bidder,
+        timestamp: bid.timestamp,
       } satisfies BidDTO;
     }),
   } satisfies AuctionDto;
 };
-*/
