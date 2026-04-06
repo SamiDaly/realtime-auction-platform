@@ -1,17 +1,21 @@
 import bcrypt from "bcryptjs";
-import { hash } from "crypto";
+import User, { convertToDto } from "../models/userSchema.mts";
 
 export const registerUser = async (name: string, email: string, password: string) => {
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(password, salt);
 
   const newUser = {
-    // _userId: new Date().getTime().toString(),
-    name,
+    username: name,
     email,
     password: hashedPassword,
   };
-  const createdUser = await userModel.create(newUser);
 
-  return convertDbUserToDto(createdUser);
+  const createdUser = await User.create(newUser);
+
+  return convertToDto(createdUser);
 };
+//säkrat lösen hash+ salt
+//skapar nyttt objekt
+// sparas i DB
+// return secure info
