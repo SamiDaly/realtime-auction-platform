@@ -1,9 +1,8 @@
 import { AuctionDto } from "./AuctionDTO.mts";
-import { BidderDTO } from "./BidderDTO.mts";
 
 export type BidDTO = {
+  bidder: string;
   amount: number;
-  bidder: BidderDTO;
   timestamp: Date;
 };
 /**
