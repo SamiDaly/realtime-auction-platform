@@ -2,11 +2,9 @@ import { AuctionDto } from "../DTOs/AuctionDTO.mts";
 import { BidDTO } from "../DTOs/BidDTO.mts";
 import Auction, { convertToAuctionDTO } from "../models/Auction.mts";
 import { AuctionForm } from "../type/AuctionForm.mts";
-import cookie from "cookie";
 
 export const createAuction = async (auction: AuctionForm) => {
   const theNewAuction = await Auction.create(auction);
-  await theNewAuction.save();
   return convertToAuctionDTO(theNewAuction);
 };
 
@@ -21,7 +19,8 @@ export const placeBid = async (auction: AuctionDto, bid: BidDTO) => {
     return "creator must not place a bid on their own item";
   }
 
-  const lastBid = theAuction.bids[theAuction.bids.length - 1];
+  const auctionToDTO = convertToAuctionDTO(theAuction);
+  const lastBid = auctionToDTO.bids[auctionToDTO.bids.length - 1];
 
   if (lastBid && bid.amount <= lastBid.amount) {
     return "bid must be higher than the previous bid";
@@ -30,5 +29,5 @@ export const placeBid = async (auction: AuctionDto, bid: BidDTO) => {
   theAuction.bids.push(bid);
 
   await theAuction.save();
-  return convertToAuctionDTO(theAuction).bids;
+  return auctionToDTO.bids;
 };
