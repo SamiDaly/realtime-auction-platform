@@ -50,7 +50,14 @@ socket.on("connect", () => {
 
     socket.emit("createAuction", theNewAuction);
   });
-  socket.on("postauction", (auction: Auction) => {
-    //socket.emit place bid
+
+  socket.on("postauction", (auction: Auction[]) => {
+    //logik för att visa skapade budgivningar , Auctio
   });
+
+  //place bid
+  //en input för amount
+  //socket.emit( place bid, bid )
+
+  //socket.on("displaybids", bid:bid[]) { create bidhtml }
 });

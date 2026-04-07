@@ -13,14 +13,22 @@ import cookie from "cookie";
 import jwt from "jsonwebtoken";
 import { AuctionDto } from "./DTOs/AuctionDTO.mts";
 import { AuctionForm } from "./type/AuctionForm.mts";
-import Auction, { auctionSchema } from "./models/Auction.mts";
+import Auction, {
+  auctionSchema,
+  convertToAuctionDTO,
+} from "./models/Auction.mts";
+import { BidDTO } from "./DTOs/BidDTO.mts";
+import { createAuction, placeBid } from "./AuctionServices/services.mts";
+import { UserDto } from "./models/userDTO.mts";
+import { log } from "node:console";
 //import type { UserDto } from "./models/userDto.mjs";
 config();
 const mongoUrl = process.env.MONGO_URI;
 const port = process.env.PORT || 3000;
 
 export const auctionRouter = express.Router();
-if (!mongoUrl) throw new Error("Could not find connection string in the env file");
+if (!mongoUrl)
+  throw new Error("Could not find connection string in the env file");
 
 const app = express();
 const server = createServer(app);
@@ -36,17 +44,37 @@ const io = new Server(server, {
   },
 });
 
-//app.use("/api/register", registerRouter);
-//app.use("/api/login", loginRouter);
-
 io.on("connection", (socket) => {
   console.log("a user connected");
 
   //post i DB
-  socket.on("createAuction", async (auction: AuctionForm) => {
-    const theNewAuction = await Auction.create(auction);
-    console.log("auktion", theNewAuction);
+  socket.on("createAuction", async (auction: AuctionDto) => {
+    /* const theNewAuction = await Auction.create(auction);
+    await theNewAuction.save();*/
+    const cookies = cookie.parse(socket.handshake.headers.cookie || "");
+    const loginCookie = cookies.login;
+    if (loginCookie) {
+      const userDto = jwt.decode(loginCookie) as UserDto;
+      auction.creator = userDto.username;
+    }
+
+    const theNewAuction = await createAuction(auction);
+    console.log(theNewAuction);
+    // gör om till dto, lägg thenewAuction i en lista
     socket.emit("postAuction", theNewAuction);
+  });
+
+  socket.on("place bid", async (auction: AuctionDto, bid: BidDTO) => {
+    // sätt användare som budgivare
+    const cookies = cookie.parse(socket.handshake.headers.cookie || "");
+    const loginCookie = cookies.login;
+    if (loginCookie) {
+      const userDto = jwt.decode(loginCookie) as UserDto;
+      bid.bidder = userDto.username;
+    }
+
+    const bids = await placeBid(auction, bid);
+    socket.emit("displayBids", bids);
   });
 });
 
