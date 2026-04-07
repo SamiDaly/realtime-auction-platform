@@ -21,6 +21,14 @@ export const auctionSchema = new Schema(
   },
 );
 
+auctionSchema.statics.closeExpired = async function () {
+  const result = await this.updateMany(
+    { status: "active", endDateTime: { $lte: new Date() } },
+    { status: "ended" }
+  );
+  return result.modifiedCount;
+};
+
 const Auction = model("Auction", auctionSchema);
 
 export default Auction;
