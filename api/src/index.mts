@@ -6,8 +6,8 @@ import cors from "cors";
 import { config } from "dotenv";
 import mongoose from "mongoose";
 //import Chat from "./models/chatSchema.mjs";
-//import registerRouter from "./routes/register.mjs";
-//import { loginRouter } from "./routes/login.mjs";
+import { registerRouter } from "./Routes/registerRouter.mjs";
+import { loginRouter } from "./Routes/loginRouter.mjs";
 import cookieParser from "cookie-parser";
 import cookie from "cookie";
 import jwt from "jsonwebtoken";
@@ -20,8 +20,7 @@ const mongoUrl = process.env.MONGO_URI;
 const port = process.env.PORT || 3000;
 
 export const auctionRouter = express.Router();
-if (!mongoUrl)
-  throw new Error("Could not find connection string in the env file");
+if (!mongoUrl) throw new Error("Could not find connection string in the env file");
 
 const app = express();
 const server = createServer(app);
