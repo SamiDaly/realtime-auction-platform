@@ -7,7 +7,25 @@
     <title>frontend</title>
   </head>
   <body>
-    <div id="app"></div>
+    <div id="app">
+      <form id="auctionForm">
+        <label for="title"> Title:</label>
+        <input id="title" type="text" name="title" />
+        <label for="img"> Image:</label>
+        <input type="file" id="img" />
+        <label for="description"> description:</label>
+        <textarea id="description"></textarea>
+        <label for="startPrice">Start price:</label>
+        <input id="startPrice" type="number" />
+
+        <label for="enddate"> end date:</label>
+        <input id="enddate" type="date" />
+
+        <label for="endTime"> Endtime:</label>
+        <input id="endTime" type="time" />
+        <button type="submit">Post auction</button>
+      </form>
+    </div>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
