@@ -26,7 +26,7 @@ loginRouter.post("/", async (req, res) => {
       secure: true,
     });
 
-    res.status(200).json(result.user);
+    res.status(200).json({ user: result.user, token: result.token });
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
   }

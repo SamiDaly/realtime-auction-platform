@@ -12,11 +12,7 @@ export const loginUser = async (email: string, password: string) => {
 
   if (!passwordMatch) return null;
 
-  const token = jwt.sign(
-    { username: user.username, email: user.email },
-    "supersecretsecret",
-    { expiresIn: "1h" },
-  );
+  const token = jwt.sign({ username: user.username, email: user.email }, process.env.JWT_SECRET!, { expiresIn: "1h" });
 
   return { user: convertToDto(user), token };
 };

@@ -13,7 +13,7 @@ export const registerUser = async (name: string, email: string, password: string
 
   const createdUser = await User.create(newUser);
 
-  return convertToDto(createdUser);
+  return { userDto: convertToDto(createdUser), token };
 };
 //säkrat lösen hash+ salt
 //skapar nyttt objekt

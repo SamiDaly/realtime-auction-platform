@@ -11,7 +11,8 @@ registerRouter.post("/register", async (req, res) => {
       return res.status(400).json({ message: "missing in fields" });
     }
 
-    const userDto = await registerUser(name, email, password);
+    const { userDto, token } = await registerUser(name, email, password);
+    res.status(201).json({ user: userDto, token });
 
     res.status(201).json(userDto);
   } catch (error) {

@@ -1,10 +1,11 @@
-import mongoose, { InferSchemaType, model, Schema } from "mongoose";
+import { InferSchemaType, model, Schema } from "mongoose";
 import { AuctionDto } from "../DTOs/AuctionDTO.mts";
 import { BidDTO } from "../DTOs/BidDTO.mts";
 import { bidSchema } from "./Bid.mts";
 
 export const auctionSchema = new Schema(
   {
+    id: { type: Number, required: true },
     title: { type: String, required: true },
     img: { type: String, required: true },
     description: { type: String, required: true },
@@ -23,9 +24,9 @@ export const auctionSchema = new Schema(
 
 // Statisk metod för att stänga alla utgångna auktioner
 auctionSchema.statics.closeExpired = async function () {
-  const result = await this.updateMany( 
+  const result = await this.updateMany(
     { status: "active", endDateTime: { $lte: new Date() } }, // Hitta alla aktiva auktioner som har passerat sitt slutdatum
-    { status: "ended" }
+    { status: "ended" },
   );
   return result.modifiedCount; // Returnera antalet uppdaterade dokument
 };
@@ -37,6 +38,7 @@ type AuctionDbType = InferSchemaType<typeof auctionSchema>;
 
 export const convertToAuctionDTO = (auction: AuctionDbType): AuctionDto => {
   return {
+    id: auction.id,
     title: auction.title,
     img: auction.img,
     description: auction.description,
