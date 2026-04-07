@@ -1,7 +1,7 @@
 import mongoose, { InferSchemaType, Schema, model } from "mongoose";
 import type { UserDto } from "./userDTO.mts";
 
-const userSchema = new Schema({
+export const userSchema = new Schema({
   username: { type: String, required: true },
   password: { type: String, required: true },
   email: { type: String, required: true },

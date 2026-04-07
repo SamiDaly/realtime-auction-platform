@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import User, { convertToDto } from "../models/userSchema.mts";
+import User, { convertToDto } from "../models/User.mts";
+//import User, { convertToDto } from "../models/userSchema.mts";
 
 export const loginUser = async (email: string, password: string) => {
   const user = await User.findOne({ email });
@@ -11,7 +12,11 @@ export const loginUser = async (email: string, password: string) => {
 
   if (!passwordMatch) return null;
 
-  const token = jwt.sign({ username: user.username, email: user.email }, "supersecretsecret", { expiresIn: "1h" });
+  const token = jwt.sign(
+    { username: user.username, email: user.email },
+    "supersecretsecret",
+    { expiresIn: "1h" },
+  );
 
   return { user: convertToDto(user), token };
 };
