@@ -21,12 +21,13 @@ export const auctionSchema = new Schema(
   },
 );
 
+// Statisk metod för att stänga alla utgångna auktioner
 auctionSchema.statics.closeExpired = async function () {
-  const result = await this.updateMany(
-    { status: "active", endDateTime: { $lte: new Date() } },
+  const result = await this.updateMany( 
+    { status: "active", endDateTime: { $lte: new Date() } }, // Hitta alla aktiva auktioner som har passerat sitt slutdatum
     { status: "ended" }
   );
-  return result.modifiedCount;
+  return result.modifiedCount; // Returnera antalet uppdaterade dokument
 };
 
 const Auction = model("Auction", auctionSchema);
