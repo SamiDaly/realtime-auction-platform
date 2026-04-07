@@ -14,7 +14,7 @@ export const auctionSchema = new Schema(
     highestBidder: { type: String, required: false },
     endDateTime: { type: Date, required: true },
     status: { type: String, enum: ["active", "ended"], default: "active" },
-    bids: [bidSchema],
+    bids: { type: [bidSchema], default: [] },
   },
   {
     timestamps: true,
@@ -40,7 +40,7 @@ export const convertToAuctionDTO = (auction: AuctionDbType): AuctionDto => {
     bids: (auction.bids as unknown as BidDTO[]).map((bid) => ({
       amount: bid.amount,
       bidder: bid.bidder,
-      timestamp: bid.timestamp,
+      time: bid.time,
     })),
   };
 };

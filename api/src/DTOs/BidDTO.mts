@@ -3,7 +3,7 @@ import { AuctionDto } from "./AuctionDTO.mts";
 export type BidDTO = {
   bidder: string;
   amount: number;
-  timestamp: Date;
+  time: Date;
 };
 /**
  *   bidder: { type: Schema.Types.ObjectId, ref: "Bidder" },
