@@ -1,6 +1,7 @@
 import { BidDTO } from "./BidDTO.mts";
 
 export type AuctionDto = {
+  id: number;
   title: string;
   img: string;
   description: string;

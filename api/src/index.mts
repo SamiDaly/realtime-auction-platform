@@ -49,15 +49,7 @@ io.on("connection", (socket) => {
 
   //post i DB
   socket.on("createAuction", async (auction: AuctionDto) => {
-    /* const theNewAuction = await Auction.create(auction);
-    await theNewAuction.save();*/
-    const cookies = cookie.parse(socket.handshake.headers.cookie || "");
-    const loginCookie = cookies.login;
-    if (loginCookie) {
-      const userDto = jwt.decode(loginCookie) as UserDto;
-      auction.creator = userDto.username;
-    }
-
+    auction.creator = socket.data.username;
     const theNewAuction = await createAuction(auction);
     console.log(theNewAuction);
     // gör om till dto, lägg thenewAuction i en lista
@@ -65,13 +57,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("place bid", async (auction: AuctionDto, bid: BidDTO) => {
-    // sätt användare som budgivare
-    const cookies = cookie.parse(socket.handshake.headers.cookie || "");
-    const loginCookie = cookies.login;
-    if (loginCookie) {
-      const userDto = jwt.decode(loginCookie) as UserDto;
-      bid.bidder = userDto.username;
-    }
+    bid.bidder = socket.data.user.username;
 
     const bids = await placeBid(auction, bid);
     socket.emit("displayBids", bids);

@@ -26,8 +26,9 @@ export const placeBid = async (auction: AuctionDto, bid: BidDTO) => {
     return "bid must be higher than the previous bid";
   }
 
+  theAuction.highestBid = bid.amount;
+  theAuction.highestBidder = bid.bidder;
   theAuction.bids.push(bid);
-
   await theAuction.save();
   return auctionToDTO.bids;
 };
