@@ -17,6 +17,6 @@ export const loginUser = async (email: string, password: string) => {
   return { user: convertToDto(user), token };
 };
 // hämta användare från DB med emale
-//jämför lösen med hashed lösen i DB
+//jämför lösen med hashed lösen i DBlkkjhgv
 //JWT token användar info
 //return token och användar info
