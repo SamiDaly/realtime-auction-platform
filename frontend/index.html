@@ -8,25 +8,49 @@
   </head>
   <body>
     <div id="app">
-      <form id="auctionForm">
-        <label for="title"> Title:</label>
-        <input id="title" type="text" name="title" />
-        <label for="img"> Image:</label>
-        <input type="file" id="img" />
-        <label for="description"> description:</label>
-        <textarea id="description"></textarea>
-        <label for="startPrice">Start price:</label>
-        <input id="startPrice" type="number" />
+      <!-- Auth-sektion (visas först) -->
+      <div id="authSection">
+        <h2>Logga in</h2>
+        <form id="loginForm">
+          <label for="loginEmail">E-post:</label>
+          <input id="loginEmail" type="email" required />
+          <label for="loginPassword">Lösenord:</label>
+          <input id="loginPassword" type="password" required />
+          <button type="submit">Logga in</button>
+        </form>
 
-        <label for="enddate"> end date:</label>
-        <input id="enddate" type="date" />
+        <h2>Registrera</h2>
+        <form id="registerForm">
+          <label for="registerName">Användarnamn:</label>
+          <input id="registerName" type="text" required />
+          <label for="registerEmail">E-post:</label>
+          <input id="registerEmail" type="email" required />
+          <label for="registerPassword">Lösenord:</label>
+          <input id="registerPassword" type="password" required />
+          <button type="submit">Registrera</button>
+        </form>
+      </div>
 
-        <label for="endTime"> Endtime:</label>
-        <input id="endTime" type="time" />
-        <button type="submit">Post auction</button>
-      </form>
+      <!-- Auktions-sektion (dold tills inloggad) -->
+      <div id="auctionSection" style="display: none">
+        <form id="auctionForm">
+          <label for="title">Title:</label>
+          <input id="title" type="text" name="title" />
+          <label for="img">Image:</label>
+          <input type="file" id="img" />
+          <label for="description">Description:</label>
+          <textarea id="description"></textarea>
+          <label for="startPrice">Start price:</label>
+          <input id="startPrice" type="number" />
+          <label for="enddate">End date:</label>
+          <input id="enddate" type="date" />
+          <label for="endTime">Endtime:</label>
+          <input id="endTime" type="time" />
+          <button type="submit">Post auction</button>
+        </form>
 
-      <div id="auctions"></div>
+        <div id="auctions"></div>
+      </div>
     </div>
     <script type="module" src="/src/main.ts"></script>
   </body>
