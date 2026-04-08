@@ -53,21 +53,29 @@ const io = new Server(server, {
 
 io.on("connection", (socket) => {
   console.log("a user connected");
-   
+
   // Socket som lyssnar när en användare ansluter till en auktion och lägger
   // till dem i rummet för den auktionen. När en användare lämnar en auktion
   // tas de bort från rummet. Då kan vi skicka uppdateringar om budgivning
   // och andra händelser i realtid till alla användare som är anslutna
   // till den specifika auktionen.
-socket.on("joinAuction", (auctionId: string) => {
-  socket.join(auctionId);
-  console.log(`${socket.data.user.username} gick med i auktion ${auctionId}`);
-});
+  socket.on("joinAuction", async (auctionId: string) => {
+    socket.join(auctionId);
+    //console.log(`${socket.data.user.username} gick med i auktion ${auctionId}`);
+    console.log("användarnamn gick med i auktionen" + auctionId);
 
-socket.on("leaveAuction", (auctionId: string) => {
-  socket.leave(auctionId);
-  console.log(`${socket.data.user.username} lämnade auktion ${auctionId}`);
-});
+    const foundAuction = await Auction.findOne({ id: +auctionId });
+    const foundChat = foundAuction?.bids;
+
+    if (foundChat) {
+      socket.emit("chatHistory", foundChat);
+    }
+  });
+
+  socket.on("leaveAuction", (auctionId: string) => {
+    socket.leave(auctionId);
+    console.log(`${socket.data.user.username} lämnade auktion ${auctionId}`);
+  });
 
   //post i DB
   socket.on("createAuction", async (auctionForm: AuctionForm) => {
@@ -88,7 +96,7 @@ socket.on("leaveAuction", (auctionId: string) => {
     await createAuction(createdAuction);
 
     const auctions = await getAuctions();
-    console.log(auctions);
+    //  console.log(auctions);
     socket.emit("postAuction", auctions);
   });
 

@@ -51,7 +51,7 @@ socket.on("connect", () => {
     socket.on("postAuction", (auctions: Auction[]) => {
       // console.log(localStorage.getItem("auctions"));
       //töm auctions id
-      console.log(auctions);
+      //  console.log(auctions);
 
       auctions.forEach((auction) => {
         const h2 = document.createElement("h2");
@@ -64,12 +64,20 @@ socket.on("connect", () => {
         creator.innerHTML = auction.creator;
         img.src = auction.img;
         description.innerHTML = auction.description;
+        const joinauctionbtn = document.createElement("button");
+        joinauctionbtn.innerHTML = "join auction";
+
+        joinauctionbtn.addEventListener("click", () => {
+          socket.emit("joinAuction", auction.id);
+        });
 
         document
           .getElementById("auctions")
-          ?.append(h2, price, creator, img, description);
+          ?.append(h2, price, creator, img, description, joinauctionbtn);
       });
     });
+
+    //    socket.on("chatHistory", )
   });
 
   //place bid
