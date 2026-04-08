@@ -1,4 +1,5 @@
 import type { Auction } from "./Models/Auction";
+import type { AuctionForm } from "./Models/AuctionForm";
 import "./style.css";
 
 import { io } from "socket.io-client";
@@ -40,18 +41,18 @@ socket.on("connect", () => {
       img: img,
       description: description,
       startPrice: startPrice,
-      highestBid: null,
-      creator: null, //ska tas från inlogg cookies
-      highestBidder: null,
+      //highestBid: null,
+      //creator: null, //ska tas från inlogg cookies
+      //highestBidder: null,
       endDateTime: date,
       status: "active",
       bids: [],
-    } satisfies Auction;
+    } satisfies AuctionForm;
 
     socket.emit("createAuction", theNewAuction);
   });
 
-  socket.on("postauction", (auction: Auction[]) => {
+  socket.on("postAuction", (auction: Auction[]) => {
     //logik för att visa skapade budgivningar , Auctio
   });
 
