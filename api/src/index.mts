@@ -19,7 +19,6 @@ import { createAuction, placeBid } from "./AuctionServices/services.mts";
 import { UserDto } from "./models/userDTO.mts";
 import { log } from "node:console";
 import { type } from "node:os";
-//import type { UserDto } from "./models/userDto.mjs";
 
 config();
 const mongoUrl = process.env.MONGO_URI;
