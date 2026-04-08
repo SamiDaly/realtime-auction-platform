@@ -4,4 +4,5 @@ export type AuctionForm = {
   description: string;
   startPrice: number;
   endDateTime: Date;
+  status: "active" | "ended";
 };

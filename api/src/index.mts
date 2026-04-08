@@ -18,9 +18,14 @@ import Auction, {
   convertToAuctionDTO,
 } from "./models/Auction.mts";
 import { BidDTO } from "./DTOs/BidDTO.mts";
-import { createAuction, placeBid } from "./AuctionServices/services.mts";
+import {
+  createAuction,
+  getAuctions,
+  placeBid,
+} from "./AuctionServices/services.mts";
 import { UserDto } from "./models/userDTO.mts";
 import { log } from "node:console";
+import { AuctionCollection } from "./models/AuctionCollection.mts";
 //import type { UserDto } from "./models/userDto.mjs";
 config();
 const mongoUrl = process.env.MONGO_URI;
@@ -37,6 +42,8 @@ app.use(json());
 app.use(cors());
 app.use(cookieParser());
 
+const auctions: AuctionDto[] = [];
+
 const io = new Server(server, {
   cors: {
     origin: "http://localhost:5173",
@@ -48,16 +55,30 @@ io.on("connection", (socket) => {
   console.log("a user connected");
 
   //post i DB
-  socket.on("createAuction", async (auction: AuctionDto) => {
-    auction.creator = socket.data.username;
-    const theNewAuction = await createAuction(auction);
-    console.log(theNewAuction);
-    // gör om till dto, lägg thenewAuction i en lista
-    socket.emit("postAuction", theNewAuction);
+  socket.on("createAuction", async (auctionForm: AuctionForm) => {
+    const createdAuction = {
+      id: Date.now(),
+      title: auctionForm.title,
+      img: auctionForm.img,
+      description: auctionForm.description,
+      startPrice: auctionForm.startPrice,
+      highestBid: 0,
+      creator: socket.data.username || "andrea",
+      highestBidder: null,
+      endDateTime: auctionForm.endDateTime,
+      status: auctionForm.status,
+      bids: [],
+    } satisfies AuctionDto;
+
+    await createAuction(createdAuction);
+
+    const auctions = await getAuctions();
+    console.log(auctions);
+    socket.emit("postAuction", auctions);
   });
 
   socket.on("place bid", async (auction: AuctionDto, bid: BidDTO) => {
-    bid.bidder = socket.data.user.username;
+    bid.bidder = socket.data.user.username || "andrea";
 
     const bids = await placeBid(auction, bid);
     socket.emit("displayBids", bids);

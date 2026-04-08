@@ -1,5 +1,6 @@
 import type { Auction } from "./Models/Auction";
 import type { AuctionForm } from "./Models/AuctionForm";
+//import type { AuctionForm } from "./Models/AuctionForm";
 import "./style.css";
 
 import { io } from "socket.io-client";
@@ -41,19 +42,34 @@ socket.on("connect", () => {
       img: img,
       description: description,
       startPrice: startPrice,
-      //highestBid: null,
-      //creator: null, //ska tas från inlogg cookies
-      //highestBidder: null,
       endDateTime: date,
       status: "active",
-      bids: [],
     } satisfies AuctionForm;
 
     socket.emit("createAuction", theNewAuction);
-  });
 
-  socket.on("postAuction", (auction: Auction[]) => {
-    //logik för att visa skapade budgivningar , Auctio
+    socket.on("postAuction", (auctions: Auction[]) => {
+      // console.log(localStorage.getItem("auctions"));
+      //töm auctions id
+      console.log(auctions);
+
+      auctions.forEach((auction) => {
+        const h2 = document.createElement("h2");
+        const price = document.createElement("h3");
+        const creator = document.createElement("h4");
+        const img = document.createElement("img");
+        const description = document.createElement("p");
+        h2.innerHTML = auction.title;
+        price.innerHTML = auction.startPrice.toString() + "kr";
+        creator.innerHTML = auction.creator;
+        img.src = auction.img;
+        description.innerHTML = auction.description;
+
+        document
+          .getElementById("auctions")
+          ?.append(h2, price, creator, img, description);
+      });
+    });
   });
 
   //place bid
