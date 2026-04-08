@@ -15,7 +15,8 @@ export const registerUser = async (name: string, email: string, password: string
 
   return { userDto: convertToDto(createdUser), token };
 };
-//säkrat lösen hash+ salt
-//skapar nyttt objekt
-// sparas i DB
-// return secure info
+// 1. Skapar salt med bcrypt
+// 2. Hashar lösenordet
+// 3. Skapar nytt user-objekt
+// 4. Sparar användaren i MongoDB
+// 5. Returnerar säker användardata (DTO)
