@@ -1,4 +1,5 @@
-import { Schema } from "mongoose";
+import { InferSchemaType, Schema } from "mongoose";
+import { BidDTO } from "../DTOs/BidDTO.mts";
 
 // Schema som beskriver en budgivning, med fält för belopp och budgivare.
 // Tidsstämplar används för att hålla reda på när budet lades,
@@ -9,6 +10,16 @@ export const bidSchema = new Schema(
     bidder: { type: String, required: true },
   },
   {
-    timestamps: { createdAt: "time", updatedAt: false }, 
-  }
+    timestamps: { createdAt: "time", updatedAt: false },
+  },
 );
+type BidDbType = InferSchemaType<typeof bidSchema>;
+
+/*export const convertToBidDTO=(bid: BidDbType): BidDTO=>{
+  return{
+    amount : bid.amount,
+    bidder : bid.bidder, 
+    
+  }
+
+}*/

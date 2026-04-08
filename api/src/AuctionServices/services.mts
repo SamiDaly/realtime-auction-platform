@@ -1,6 +1,7 @@
 import { AuctionDto } from "../DTOs/AuctionDTO.mts";
 import { BidDTO } from "../DTOs/BidDTO.mts";
 import Auction, { convertToAuctionDTO } from "../models/Auction.mts";
+import { AuctionCollection } from "../models/AuctionCollection.mts";
 import { AuctionForm } from "../type/AuctionForm.mts";
 
 export const createAuction = async (auction: AuctionForm) => {
@@ -8,6 +9,9 @@ export const createAuction = async (auction: AuctionForm) => {
   return convertToAuctionDTO(theNewAuction);
 };
 
+export const getAuctions = async () => {
+  return await AuctionCollection.find();
+};
 export const placeBid = async (auction: AuctionDto, bid: BidDTO) => {
   const theAuction = await Auction.findOne({ title: auction.title });
 
