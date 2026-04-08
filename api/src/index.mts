@@ -46,6 +46,21 @@ const io = new Server(server, {
 
 io.on("connection", (socket) => {
   console.log("a user connected");
+   
+  // Socket som lyssnar när en användare ansluter till en auktion och lägger
+  // till dem i rummet för den auktionen. När en användare lämnar en auktion
+  // tas de bort från rummet. Då kan vi skicka uppdateringar om budgivning
+  // och andra händelser i realtid till alla användare som är anslutna
+  // till den specifika auktionen.
+socket.on("joinAuction", (auctionId: string) => {
+  socket.join(auctionId);
+  console.log(`${socket.data.user.username} gick med i auktion ${auctionId}`);
+});
+
+socket.on("leaveAuction", (auctionId: string) => {
+  socket.leave(auctionId);
+  console.log(`${socket.data.user.username} lämnade auktion ${auctionId}`);
+});
 
   //post i DB
   socket.on("createAuction", async (auction: AuctionDto) => {
