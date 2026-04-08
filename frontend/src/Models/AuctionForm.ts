@@ -4,6 +4,6 @@ export type AuctionForm = {
   description: string;
   startPrice: number;
   endDateTime: Date;
-  status: "active" | "ended";
+  // status: "active" | "ended"; // tror inte behövs, servern kan avgöra detta baserat på endDateTime
   // bids: Bid[] | [];
 };
