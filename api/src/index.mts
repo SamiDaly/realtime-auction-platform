@@ -54,6 +54,11 @@ const io = new Server(server, {
 io.on("connection", (socket) => {
   console.log("a user connected");
 
+  socket.on("getAuctions", async () => {
+    const auctions = await getAuctions();
+    socket.emit("postAuction", auctions);
+  });
+
   // Socket som lyssnar när en användare ansluter till en auktion och lägger
   // till dem i rummet för den auktionen. När en användare lämnar en auktion
   // tas de bort från rummet. Då kan vi skicka uppdateringar om budgivning
@@ -65,10 +70,14 @@ io.on("connection", (socket) => {
     console.log("användarnamn gick med i auktionen" + auctionId);
 
     const foundAuction = await Auction.findOne({ id: +auctionId });
-    const foundChat = foundAuction?.bids;
-
-    if (foundChat) {
-      socket.emit("chatHistory", foundChat);
+    if (foundAuction) {
+      const foundChat: BidDTO[] = foundAuction.bids;
+      console.log("hittade chatten", foundChat);
+      if (foundChat) {
+        socket.emit("chatHistory", foundChat);
+        // io.to(auctionId).emit("chatHistory", foundChat);
+        console.log("id:", auctionId);
+      }
     }
   });
 
@@ -96,15 +105,25 @@ io.on("connection", (socket) => {
     await createAuction(createdAuction);
 
     const auctions = await getAuctions();
-    //  console.log(auctions);
+
     socket.emit("postAuction", auctions);
   });
 
-  socket.on("place bid", async (auction: AuctionDto, bid: BidDTO) => {
-    bid.bidder = socket.data.user.username || "andrea";
+  socket.on("place bid", async (auctionId: number, bid: BidDTO) => {
+    bid.bidder = "sara";
+    const auction = await Auction.findOne({ id: auctionId });
+    console.log(auction);
+    if (!auction) return;
+    auction.bids.push(bid);
 
-    const bids = await placeBid(auction, bid);
-    socket.emit("displayBids", bids);
+    const auctionDTO = convertToAuctionDTO(auction);
+    const newBid = await placeBid(auctionDTO, bid);
+
+    console.log("Nytt bud:", newBid);
+    //io.to(auction.id.toString()).emit("NewBid", newBid);
+    //socket.emit("NewBid", newBid);
+    io.to(auctionId.toString()).emit("NewBid", bid);
+    console.log("budid:", auctionId);
   });
 });
 

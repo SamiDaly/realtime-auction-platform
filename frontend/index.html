@@ -7,8 +7,6 @@
     <title>frontend</title>
   </head>
   <body>
-    <div id="chat"></div>
-
     <div id="app">
       <!-- Auth-sektion (visas först) -->
       <div id="authSection">
@@ -52,6 +50,15 @@
         </form>
 
         <div id="auctions"></div>
+      </div>
+
+      <div id="budgivning">
+        <div id="chathistory"></div>
+
+        <form id="msgform">
+          <input id="msgInput" class="hide" />
+          <button id="sendmsg" type="submit" class="hide">send message</button>
+        </form>
       </div>
     </div>
     <script type="module" src="/src/main.ts"></script>

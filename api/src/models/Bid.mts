@@ -15,11 +15,10 @@ export const bidSchema = new Schema(
 );
 type BidDbType = InferSchemaType<typeof bidSchema>;
 
-/*export const convertToBidDTO=(bid: BidDbType): BidDTO=>{
-  return{
-    amount : bid.amount,
-    bidder : bid.bidder, 
-    
-  }
-
-}*/
+export const convertToBidDTO = (bid: BidDbType): BidDTO => {
+  return {
+    amount: bid.amount,
+    bidder: bid.bidder,
+    //time: bid.time,
+  } satisfies BidDTO;
+};
