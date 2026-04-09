@@ -51,7 +51,8 @@ export const convertToAuctionDTO = (auction: AuctionDbType): AuctionDto => {
     bids: (auction.bids as unknown as BidDTO[]).map((bid) => ({
       amount: bid.amount,
       bidder: bid.bidder,
-      time: bid.time,
+
+      // time: bid.time,
     })),
   };
 };

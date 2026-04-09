@@ -1,32 +1,22 @@
 import express, { json } from "express";
-
 import { createServer } from "node:http";
-
 import { Server } from "socket.io";
-
 import cors from "cors";
-
 import { config } from "dotenv";
-
 import mongoose from "mongoose";
-
 import { registerRouter } from "./Routes/registerRouter.mts";
-
 import { loginRouter } from "./Routes/loginRouter.mts";
-
 import cookieParser from "cookie-parser";
-
 import jwt from "jsonwebtoken";
-
 import type { AuctionForm } from "./type/AuctionForm.mts";
-
 import type { AuctionDto } from "./DTOs/AuctionDTO.mts";
-
 import type { BidDTO } from "./DTOs/BidDTO.mts";
-
-import Auction from "./models/Auction.mts";
-
-import { createAuction, getAuctions, placeBid } from "./AuctionServices/services.mts";
+import Auction, { convertToAuctionDTO } from "./models/Auction.mts";
+import {
+  createAuction,
+  getAuctions,
+  placeBid,
+} from "./AuctionServices/services.mts";
 
 config();
 
@@ -34,7 +24,8 @@ const mongoUrl = process.env.MONGO_URI;
 
 const port = process.env.PORT || 3000;
 
-if (!mongoUrl) throw new Error("Could not find connection string in the env file");
+if (!mongoUrl)
+  throw new Error("Could not find connection string in the env file");
 
 const app = express();
 
@@ -79,12 +70,28 @@ io.use((socket, next) => {
 // Alla socket-events här
 
 io.on("connection", (socket) => {
-  console.log(`${socket.data.user.username} ansluten`);
+  console.log("a user connected");
+
+  socket.on("getAuctions", async () => {
+    const auctions = await getAuctions();
+    socket.emit("postAuction", auctions);
+  });
 
   socket.on("joinAuction", async (auctionId: string) => {
     socket.join(auctionId);
+    //console.log(`${socket.data.user.username} gick med i auktion ${auctionId}`);
+    console.log("användarnamn gick med i auktionen" + auctionId);
 
-    console.log(`${socket.data.user.username} gick med i auktion ${auctionId}`);
+    const foundAuction = await Auction.findOne({ id: +auctionId });
+    if (foundAuction) {
+      const foundChat: BidDTO[] = foundAuction.bids;
+      console.log("hittade chatten", foundChat);
+      if (foundChat) {
+        socket.emit("chatHistory", foundChat);
+        // io.to(auctionId).emit("chatHistory", foundChat);
+        console.log("id:", auctionId);
+      }
+    }
   });
 
   socket.on("leaveAuction", (auctionId: string) => {
@@ -93,7 +100,7 @@ io.on("connection", (socket) => {
     console.log(`${socket.data.user.username} lämnade auktion ${auctionId}`);
   });
 
-  socket.on("createAuction", async (auctionForm: AuctionForm) => {
+  /*socket.on("createAuction", async (auctionForm: AuctionForm) => {
     const auction = await createAuction({
       ...auctionForm,
 
@@ -103,18 +110,44 @@ io.on("connection", (socket) => {
     const auctions = await getAuctions();
 
     socket.emit("postAuction", auctions);
+  });*/
+  socket.on("createAuction", async (auctionForm: AuctionForm) => {
+    const createdAuction = {
+      id: Date.now(),
+      title: auctionForm.title,
+      img: auctionForm.img,
+      description: auctionForm.description,
+      startPrice: auctionForm.startPrice,
+      highestBid: 0,
+      creator: socket.data.username || "andrea",
+      highestBidder: null,
+      endDateTime: auctionForm.endDateTime,
+      status: auctionForm.status,
+      bids: [],
+    } satisfies AuctionDto;
+
+    await createAuction(createdAuction);
+
+    const auctions = await getAuctions();
+
+    socket.emit("postAuction", auctions);
   });
 
-  socket.on("placeBid", async (auctionId: string, amount: number) => {
-    const bid = {
-      amount,
+  socket.on("place bid", async (auctionId: number, bid: BidDTO) => {
+    bid.bidder = "sara";
+    const auction = await Auction.findOne({ id: auctionId });
+    console.log(auction);
+    if (!auction) return;
+    auction.bids.push(bid);
 
-      bidder: socket.data.user.username,
-    };
+    const auctionDTO = convertToAuctionDTO(auction);
+    const newBid = await placeBid(auctionDTO, bid);
 
-    const bids = await placeBid(auctionId, bid);
-
-    io.to(auctionId).emit("newBid", bids);
+    console.log("Nytt bud:", newBid);
+    //io.to(auction.id.toString()).emit("NewBid", newBid);
+    //socket.emit("NewBid", newBid);
+    io.to(auctionId.toString()).emit("NewBid", bid);
+    console.log("budid:", auctionId);
   });
 });
 
