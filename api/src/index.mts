@@ -24,7 +24,7 @@ import type { AuctionDto } from "./DTOs/AuctionDTO.mts";
 
 import type { BidDTO } from "./DTOs/BidDTO.mts";
 
-import Auction from "./models/Auction.mts";
+import Auction, { convertToAuctionDTO } from "./models/Auction.mts";
 
 import {
   createAuction,
@@ -114,12 +114,33 @@ io.on("connection", (socket) => {
     console.log(`${socket.data.user.username} lämnade auktion ${auctionId}`);
   });
 
-  socket.on("createAuction", async (auctionForm: AuctionForm) => {
+  /*socket.on("createAuction", async (auctionForm: AuctionForm) => {
     const auction = await createAuction({
       ...auctionForm,
 
       creator: socket.data.user.username,
     });
+
+    const auctions = await getAuctions();
+
+    socket.emit("postAuction", auctions);
+  });*/
+  socket.on("createAuction", async (auctionForm: AuctionForm) => {
+    const createdAuction = {
+      id: Date.now(),
+      title: auctionForm.title,
+      img: auctionForm.img,
+      description: auctionForm.description,
+      startPrice: auctionForm.startPrice,
+      highestBid: 0,
+      creator: socket.data.username || "andrea",
+      highestBidder: null,
+      endDateTime: auctionForm.endDateTime,
+      status: auctionForm.status,
+      bids: [],
+    } satisfies AuctionDto;
+
+    await createAuction(createdAuction);
 
     const auctions = await getAuctions();
 
