@@ -5,7 +5,7 @@ import "./style.css";
 import { io } from "socket.io-client";
 startApp();
 // Hero-navigation
-/*
+
 document.getElementById("showLogin")?.addEventListener("click", () => {
   document.getElementById("heroView")!.style.display = "none";
   document.getElementById("loginView")!.style.display = "flex";
@@ -79,7 +79,7 @@ const existingToken = localStorage.getItem("token");
 if (existingToken) {
   startApp();
 }
-*/
+
 function startApp() {
   document.getElementById("authSection")!.style.display = "none";
   document.getElementById("auctionSection")!.style.display = "block";
@@ -87,6 +87,10 @@ function startApp() {
   const socket = io("http://localhost:3000", {
     auth: { token: localStorage.getItem("token") },
   });
+
+  /* const socket = io("http://localhost:3000", {
+    withCredentials: true,
+  });*/
 
   socket.on("connect", () => {
     console.log("socket:", socket.connected);
@@ -142,7 +146,7 @@ function startApp() {
         startPrice,
         endDateTime: date,
       } satisfies AuctionForm;
-
+      console.log(theNewAuction);
       socket.emit("createAuction", theNewAuction);
     });
     //}

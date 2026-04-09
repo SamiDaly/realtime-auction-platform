@@ -100,17 +100,6 @@ io.on("connection", (socket) => {
     console.log(`${socket.data.user.username} lämnade auktion ${auctionId}`);
   });
 
-  /*socket.on("createAuction", async (auctionForm: AuctionForm) => {
-    const auction = await createAuction({
-      ...auctionForm,
-
-      creator: socket.data.user.username,
-    });
-
-    const auctions = await getAuctions();
-
-    socket.emit("postAuction", auctions);
-  });*/
   socket.on("createAuction", async (auctionForm: AuctionForm) => {
     const createdAuction = {
       id: Date.now(),
@@ -129,7 +118,7 @@ io.on("connection", (socket) => {
     await createAuction(createdAuction);
 
     const auctions = await getAuctions();
-
+    console.log(auctions);
     socket.emit("postAuction", auctions);
   });
 
