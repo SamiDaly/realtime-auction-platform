@@ -87,7 +87,8 @@ io.on("connection", (socket) => {
       const foundChat: BidDTO[] = foundAuction.bids;
       console.log("hittade chatten", foundChat);
       if (foundChat) {
-        socket.emit("chatHistory", foundChat);
+        // socket.emit("chatHistory", foundChat);
+        io.to(auctionId.toString()).emit("chatHistory", foundChat);
         // io.to(auctionId).emit("chatHistory", foundChat);
         console.log("id:", auctionId);
       }

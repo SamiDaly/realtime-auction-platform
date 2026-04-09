@@ -5,7 +5,7 @@ import "./style.css";
 import { io } from "socket.io-client";
 startApp();
 // Hero-navigation
-
+let currentAuctionId: number | null = null;
 document.getElementById("showLogin")?.addEventListener("click", () => {
   document.getElementById("heroView")!.style.display = "none";
   document.getElementById("loginView")!.style.display = "flex";
@@ -167,45 +167,46 @@ function startApp() {
       creator.innerHTML = auction.creator;
       img.src = auction.img;
       description.innerHTML = auction.description;
+      const joinauctionbtn = document.createElement("button");
+      joinauctionbtn.innerHTML = "join auction";
+      joinauctionbtn.id = "joinauctionbtn";
 
-      const joinBtn = document.createElement("button");
-      joinBtn.innerHTML = "Join auction";
-
-      joinBtn.addEventListener("click", () => {
+      const msgInput = document.getElementById("msgInput");
+      joinauctionbtn.addEventListener("click", () => {
         socket.emit("joinAuction", auction.id.toString());
 
-        // Dölj allt utom den valda auktionen
+        //document.getElementById(auction.id.toString())?.classList.add("hide");
+        //göm alla element som man inte klickat på
         document.getElementById("auctionForm")?.classList.add("hide");
         const allAuctions = document.querySelectorAll("#auctions > div");
         allAuctions.forEach((element) => {
           if (element.id !== auction.id.toString()) {
             element.classList.add("hide");
           }
-        });
-        joinBtn.classList.add("hide");
+          joinauctionbtn.classList.add("hide");
 
-        // Visa budformulär
-        document.getElementById("msgInput")?.classList.remove("hide");
-        document.getElementById("sendmsg")?.classList.remove("hide");
+          msgInput?.classList.remove("hide");
+          const sendMsgBtn = document.getElementById("sendmsg");
+          sendMsgBtn?.classList.remove("hide");
+        });
       });
 
-      // Lägg bud
       document.getElementById("msgform")?.addEventListener("submit", (e) => {
         e.preventDefault();
-        const msgInput = document.getElementById(
-          "msgInput",
-        ) as HTMLInputElement;
 
-        const newBid = {
+        const msgInputValue = (msgInput as HTMLInputElement).value;
+
+        const newbid = {
           bidder: "",
-          amount: parseInt(msgInput.value),
+          amount: parseInt(msgInputValue),
           time: new Date(),
         } satisfies Bid;
 
-        socket.emit("place bid", auction.id, newBid);
-      });
+        // bids.push(newbid);
 
-      auctionDiv.append(h2, price, creator, img, description, joinBtn);
+        socket.emit("place bid", auction.id, newbid);
+      });
+      auctionDiv.append(h2, price, creator, img, description, joinauctionbtn);
       container.append(auctionDiv);
     }
   });
