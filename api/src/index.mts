@@ -8,7 +8,7 @@ import mongoose from "mongoose";
 //import Chat from "./models/chatSchema.mjs";
 import { registerRouter } from "./Routes/registerRouter.mjs";
 import { loginRouter } from "./Routes/loginRouter.mjs";
-import cookieParser from "cookie-parser";
+// import cookieParser from "cookie-parser";
 import cookie from "cookie";
 import jwt from "jsonwebtoken";
 import { AuctionDto } from "./DTOs/AuctionDTO.mts";
@@ -40,7 +40,7 @@ const server = createServer(app);
 
 app.use(json());
 app.use(cors());
-app.use(cookieParser());
+// app.use(cookieParser());
 
 const auctions: AuctionDto[] = [];
 

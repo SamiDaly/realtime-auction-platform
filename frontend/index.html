@@ -3,35 +3,50 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>frontend</title>
   </head>
   <body>
-    <div id="app">
-      <!-- Auth-sektion (visas först) -->
-      <div id="authSection">
-        <h2>Logga in</h2>
-        <form id="loginForm">
-          <label for="loginEmail">E-post:</label>
-          <input id="loginEmail" type="email" required />
-          <label for="loginPassword">Lösenord:</label>
-          <input id="loginPassword" type="password" required />
-          <button type="submit">Logga in</button>
-        </form>
-
-        <h2>Registrera</h2>
-        <form id="registerForm">
-          <label for="registerName">Användarnamn:</label>
-          <input id="registerName" type="text" required />
-          <label for="registerEmail">E-post:</label>
-          <input id="registerEmail" type="email" required />
-          <label for="registerPassword">Lösenord:</label>
-          <input id="registerPassword" type="password" required />
-          <button type="submit">Registrera</button>
-        </form>
+    <div id="authSection">
+      <!-- Hero-vy -->
+      <div id="heroView">
+        <h1>Vintage Auction</h1>
+        <p>En unik möjlighet att köpa till ett riktigt bra pris. Lägg ditt bud och säkra varan innan auktionen avslutas.</p>
+        <div class="hero-buttons">
+          <button id="showLogin" class="btn-filled">Logga in</button>
+          <button id="showRegister" class="btn-outline">Registrera dig</button>
+        </div>
       </div>
 
-      <!-- Auktions-sektion (dold tills inloggad) -->
+      <!-- Login-formulär -->
+      <div id="loginView" style="display: none;">
+        <h2>Logga in</h2>
+        <form id="loginForm">
+          <input id="loginEmail" type="email" placeholder="E-post" required />
+          <input id="loginPassword" type="password" placeholder="Lösenord" required />
+          <button type="submit" class="btn-filled">Logga in</button>
+        </form>
+        <button id="backFromLogin" class="btn-link">Tillbaka</button>
+      </div>
+
+      <!-- Register-formulär -->
+      <div id="registerView" style="display: none;">
+        <h2>Registrera dig</h2>
+        <form id="registerForm">
+          <input id="registerName" type="text" placeholder="Användarnamn" required />
+          <input id="registerEmail" type="email" placeholder="E-post" required />
+          <input id="registerPassword" type="password" placeholder="Lösenord" required />
+          <button type="submit" class="btn-filled">Registrera dig</button>
+        </form>
+        <button id="backFromRegister" class="btn-link">Tillbaka</button>
+      </div>
+    </div>
+
+      <!-- Auktions-sektion -->
       <div id="auctionSection" style="display: none">
         <form id="auctionForm">
           <label for="title">Title:</label>

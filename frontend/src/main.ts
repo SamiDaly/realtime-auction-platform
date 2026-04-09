@@ -3,6 +3,26 @@ import type { AuctionForm } from "./Models/AuctionForm";
 import "./style.css";
 import { io } from "socket.io-client";
 
+// Hero-navigation — lägg till högst upp i main.ts
+document.getElementById("showLogin")?.addEventListener("click", () => {
+  document.getElementById("heroView")!.style.display = "none";
+  document.getElementById("loginView")!.style.display = "flex";
+});
+
+document.getElementById("showRegister")?.addEventListener("click", () => {
+  document.getElementById("heroView")!.style.display = "none";
+  document.getElementById("registerView")!.style.display = "flex";
+});
+
+document.getElementById("backFromLogin")?.addEventListener("click", () => {
+  document.getElementById("loginView")!.style.display = "none";
+  document.getElementById("heroView")!.style.display = "block";
+});
+
+document.getElementById("backFromRegister")?.addEventListener("click", () => {
+  document.getElementById("registerView")!.style.display = "none";
+  document.getElementById("heroView")!.style.display = "block";
+});
 
 // Register, inlogg och kolla om redan inloggad
 document.getElementById("registerForm")?.addEventListener("submit", async (e) => {
@@ -59,63 +79,15 @@ function startApp() {
   document.getElementById("authSection")!.style.display = "none";
   document.getElementById("auctionSection")!.style.display = "block";
 
-  // När Sami lagt in allt klart:
-  // Anslut med token i headern
-  // const socket = io("http://localhost:3000", {
-  //   auth: { token: localStorage.getItem("token") },
-  // });  
-  // istället för nedan
   const socket = io("http://localhost:3000", {
-    withCredentials: true,
-  });
-
+     auth: { token: localStorage.getItem("token") },
+  });  
 
 //inlogg logik
 
 socket.on("connect", () => {
   console.log("socket:", socket.connected);
-
-
-
-// Nedan behövs inte längre eftersom vi har flyttat in den
-// i startApp() som körs efter inloggning/registrering
-
-  // document.getElementById("auctionForm")?.addEventListener("submit", (e) => {
-  //   e.preventDefault();
-
-    //hämta värden
-    // const title = (document.getElementById("title") as HTMLInputElement).value;
-    // const img = (document.getElementById("img") as HTMLInputElement).value;
-    // const description = (
-    //   document.getElementById("description") as HTMLTextAreaElement
-    // ).value;
-    // const startPrice = parseInt(
-    //  (document.getElementById("startPrice") as HTMLInputElement).value,
-    // );
-
-    // const endDate = (document.getElementById("enddate") as HTMLInputElement)
-    //   .value;
-    // const endtime = (document.getElementById("endTime") as HTMLInputElement)
-    //   .value;
-
-    //funktionalitet för att kontrollera att tid / datum ligger i framtiden
-
-    // const d = endDate + " " + endtime;
-
-    // const date = new Date(d);
-
-    // const theNewAuction = {
-    //   title: title,
-      img: img,
-    //  description: description,
-    //  startPrice: startPrice,
-    //  endDateTime: date,
-    //  status: "active", // behövs inte för servern kan avgöra detta baserat på endDateTime
-    //} satisfies AuctionForm;
-
-    // socket.emit("createAuction", theNewAuction);
-
-
+});
 
  // Skapar en lyssnare som lyssnar på "postAuction" eventet och uppdaterar
  // DOM:en med de nya auktionerna som skickas från servern
@@ -163,7 +135,6 @@ socket.on("connect", () => {
 
       socket.emit("createAuction", theNewAuction);
     });
-  });
 }
 
   //place bid
