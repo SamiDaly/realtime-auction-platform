@@ -3,7 +3,7 @@ import type { AuctionForm } from "./Models/AuctionForm";
 import type { Bid } from "./Models/Bid";
 import "./style.css";
 import { io } from "socket.io-client";
-startApp();
+//startApp();
 // Hero-navigation
 
 document.getElementById("showLogin")?.addEventListener("click", () => {
