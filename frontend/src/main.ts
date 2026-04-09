@@ -3,7 +3,7 @@ import type { AuctionForm } from "./Models/AuctionForm";
 import type { Bid } from "./Models/Bid";
 import "./style.css";
 import { io } from "socket.io-client";
-
+startApp();
 // Hero-navigation
 document.getElementById("showLogin")?.addEventListener("click", () => {
   document.getElementById("heroView")!.style.display = "none";
@@ -26,30 +26,39 @@ document.getElementById("backFromRegister")?.addEventListener("click", () => {
 });
 
 // Register
-document.getElementById("registerForm")?.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const name = (document.getElementById("registerName") as HTMLInputElement).value;
-  const email = (document.getElementById("registerEmail") as HTMLInputElement).value;
-  const password = (document.getElementById("registerPassword") as HTMLInputElement).value;
+document
+  .getElementById("registerForm")
+  ?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const name = (document.getElementById("registerName") as HTMLInputElement)
+      .value;
+    const email = (document.getElementById("registerEmail") as HTMLInputElement)
+      .value;
+    const password = (
+      document.getElementById("registerPassword") as HTMLInputElement
+    ).value;
 
-  const res = await fetch("http://localhost:3000/api/auth/register", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ name, email, password }),
+    const res = await fetch("http://localhost:3000/api/auth/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, email, password }),
+    });
+
+    const data = await res.json();
+    if (data.token) {
+      localStorage.setItem("token", data.token);
+      startApp();
+    }
   });
-
-  const data = await res.json();
-  if (data.token) {
-    localStorage.setItem("token", data.token);
-    startApp();
-  }
-});
 
 // Login
 document.getElementById("loginForm")?.addEventListener("submit", async (e) => {
   e.preventDefault();
-  const email = (document.getElementById("loginEmail") as HTMLInputElement).value;
-  const password = (document.getElementById("loginPassword") as HTMLInputElement).value;
+  const email = (document.getElementById("loginEmail") as HTMLInputElement)
+    .value;
+  const password = (
+    document.getElementById("loginPassword") as HTMLInputElement
+  ).value;
 
   const res = await fetch("http://localhost:3000/api/auth/login", {
     method: "POST",
@@ -111,10 +120,16 @@ function startApp() {
 
     const title = (document.getElementById("title") as HTMLInputElement).value;
     const img = (document.getElementById("img") as HTMLInputElement).value;
-    const description = (document.getElementById("description") as HTMLTextAreaElement).value;
-    const startPrice = parseInt((document.getElementById("startPrice") as HTMLInputElement).value);
-    const endDate = (document.getElementById("enddate") as HTMLInputElement).value;
-    const endtime = (document.getElementById("endTime") as HTMLInputElement).value;
+    const description = (
+      document.getElementById("description") as HTMLTextAreaElement
+    ).value;
+    const startPrice = parseInt(
+      (document.getElementById("startPrice") as HTMLInputElement).value,
+    );
+    const endDate = (document.getElementById("enddate") as HTMLInputElement)
+      .value;
+    const endtime = (document.getElementById("endTime") as HTMLInputElement)
+      .value;
 
     const date = new Date(endDate + " " + endtime);
 
@@ -131,7 +146,11 @@ function startApp() {
 }
 
 // Skapa HTML för en auktion
-function createAuctionHTML(auction: Auction, container: HTMLElement, socket: any) {
+function createAuctionHTML(
+  auction: Auction,
+  container: HTMLElement,
+  socket: any,
+) {
   const auctionDiv = document.createElement("div");
   auctionDiv.id = auction.id.toString();
 
