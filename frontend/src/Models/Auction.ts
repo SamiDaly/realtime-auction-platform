@@ -1,5 +1,4 @@
 import type { AuctionForm } from "./AuctionForm";
-import type { Bid } from "./Bid";
 
 /*export type Auction extends AuctionForm  {
   // auctionForm: AuctionForm;

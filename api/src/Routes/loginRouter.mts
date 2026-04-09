@@ -26,11 +26,13 @@ loginRouter.post("/", async (req, res) => {
       secure: true,
     });
 
-    res.status(200).json(result.user);
+    res.status(200).json({ user: result.user, token: result.token });
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
   }
 });
-//login
-//cookie
-// return användar info
+// 1. Tar emot email + password
+// 2. Validerar att fälten finns
+// 3. Anropar loginUser()
+// 4. Skapar cookie med JWT-token
+// 5. Returnerar userDTO + token

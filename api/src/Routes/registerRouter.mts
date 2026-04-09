@@ -11,13 +11,15 @@ registerRouter.post("/register", async (req, res) => {
       return res.status(400).json({ message: "missing in fields" });
     }
 
-    const userDto = await registerUser(name, email, password);
+    const { userDto, token } = await registerUser(name, email, password);
 
-    res.status(201).json(userDto);
+    res.status(201).json({ user: userDto, token });
   } catch (error) {
     res.status(500).json({ message: "error", error });
   }
 });
-//validera
-//skapa användare
-// return secure DTO info
+// 1. Tar emot name, email och password
+// 2. Validerar att alla fält är ifyllda
+// 3. Anropar registerUser()
+// 4. Returnerar userDTO
+// 5. Skickar även JWT token

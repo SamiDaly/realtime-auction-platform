@@ -1,7 +1,6 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User, { convertToDto } from "../models/User.mts";
-//import User, { convertToDto } from "../models/userSchema.mts";
 
 export const loginUser = async (email: string, password: string) => {
   const user = await User.findOne({ email });
@@ -12,15 +11,13 @@ export const loginUser = async (email: string, password: string) => {
 
   if (!passwordMatch) return null;
 
-  const token = jwt.sign(
-    { username: user.username, email: user.email },
-    "supersecretsecret",
-    { expiresIn: "1h" },
-  );
+  const token = jwt.sign({ username: user.username, email: user.email }, process.env.JWT_SECRET!, { expiresIn: "1h" });
 
   return { user: convertToDto(user), token };
 };
-// hämta användare från DB med emale
-//jämför lösen med hashed lösen i DB
-//JWT token användar info
-//return token och användar info
+// 1. Hämta user från DB via email
+// 2. Kontrollera att user finns
+// 3. Jämför lösenord med bcrypt.compare()
+// 4. Skapa JWT token med username + email
+// 5. Token signeras med JWT_SECRET
+// 6. Returnera userinfo + token
