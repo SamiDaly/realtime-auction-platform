@@ -1,8 +1,9 @@
 import type { Auction } from "./Models/Auction";
 import type { AuctionForm } from "./Models/AuctionForm";
+import type { Bid } from "./Models/Bid";
 import "./style.css";
 import { io } from "socket.io-client";
-
+startApp(); //tillfällig lösning för att starta appen, kommer att flyttas in i en funktion som körs efter inloggning/registrering
 // Register, inlogg och kolla om redan inloggad
 document.getElementById("registerForm")?.addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -58,62 +59,31 @@ function startApp() {
   document.getElementById("authSection")!.style.display = "none";
   document.getElementById("auctionSection")!.style.display = "block";
 
-  // När Sami lagt in allt klart:
-  // Anslut med token i headern
-  // const socket = io("http://localhost:3000", {
-  //   auth: { token: localStorage.getItem("token") },
-  // });
-  // istället för nedan
+  /*  När Sami lagt in allt klart:
+   Anslut med token i headern */
   const socket = io("http://localhost:3000", {
-    withCredentials: true,
+    auth: { token: localStorage.getItem("token") },
   });
+
+  // istället för nedan
+  /*  const socket = io("http://localhost:3000", {
+    withCredentials: true,
+  }); */
 
   //inlogg logik
 
   socket.on("connect", () => {
     console.log("socket:", socket.connected);
 
-    const theNewAuction = {
-      title: title,
-      img: img,
-      description: description,
-      startPrice: startPrice,
-      //highestBid: null,
-      //creator: null, //ska tas från inlogg cookies
-      //highestBidder: null,
-      endDateTime: date,
-      status: "active",
-      bids: [],
-    } satisfies AuctionForm;
+    socket.emit("getAuctions");
 
-    // socket.emit("createAuction", theNewAuction);
-
-    // Skapar en lyssnare som lyssnar på "postAuction" eventet och uppdaterar
-    // DOM:en med de nya auktionerna som skickas från servern
     socket.on("postAuction", (auctions: Auction[]) => {
       const container = document.getElementById("auctions")!;
       container.innerHTML = "";
 
       // Skapar HTML-element för varje auktion och lägg till dem i containern
       auctions.forEach((auction) => {
-        const h2 = document.createElement("h2");
-        const price = document.createElement("h3");
-        const creator = document.createElement("h4");
-        const img = document.createElement("img");
-        const description = document.createElement("p");
-        h2.innerHTML = auction.title;
-        price.innerHTML = auction.startPrice.toString() + "kr";
-        creator.innerHTML = auction.creator;
-        img.src = auction.img;
-        description.innerHTML = auction.description;
-        const joinauctionbtn = document.createElement("button");
-        joinauctionbtn.innerHTML = "join auction";
-
-        joinauctionbtn.addEventListener("click", () => {
-          socket.emit("joinAuction", auction.id);
-        });
-
-        container.append(h2, price, creator, img, description, joinauctionbtn);
+        createAuctionHTML(auction, container);
       });
     });
 
@@ -140,12 +110,43 @@ function startApp() {
 
       socket.emit("createAuction", theNewAuction);
     });
+
+    socket.on("chatHistory", (bids: Bid[]) => {
+      const chatDiv = document.getElementById("chathistory");
+      if (chatDiv)
+        bids.forEach((bid) => {
+          const bidder = document.createElement("label");
+          const amount = document.createElement("label");
+
+          bidder.innerHTML = bid.bidder;
+          amount.innerHTML = JSON.stringify(bid.amount);
+          chatDiv.append(bidder, amount);
+        });
+    });
+
+    document.getElementById("msgform")?.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const msgInput = (document.getElementById("msgInput") as HTMLInputElement).value;
+    });
   });
+
+  const createAuctionHTML = (auction: Auction, container: HTMLElement) => {
+    const h2 = document.createElement("h2");
+    const price = document.createElement("h3");
+    const creator = document.createElement("h4");
+    const img = document.createElement("img");
+    const description = document.createElement("p");
+    h2.innerHTML = auction.title;
+    price.innerHTML = auction.startPrice.toString() + "kr";
+    creator.innerHTML = auction.creator;
+    img.src = auction.img;
+    description.innerHTML = auction.description;
+    const joinauctionbtn = document.createElement("button");
+    joinauctionbtn.innerHTML = "join auction";
+
+    joinauctionbtn.addEventListener("click", () => {
+      socket.emit("joinAuction", auction.id);
+    });
+    container.append(h2, price, creator, img, description, joinauctionbtn);
+  };
 }
-
-socket.on("postAuction", (auction: Auction[]) => {
-  //logik för att visa skapade budgivningar , Auctio
-});
-
-//socket.on("displaybids", bid:bid[]) { create bidhtml }
-// });
