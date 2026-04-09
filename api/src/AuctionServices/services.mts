@@ -13,7 +13,7 @@ export const getAuctions = async () => {
   return await AuctionCollection.find();
 };
 export const placeBid = async (auction: AuctionDto, bid: BidDTO) => {
-  const theAuction = await Auction.findOne({ title: auction.title });
+  const theAuction = await Auction.findOne({ id: auction.id });
 
   if (!theAuction) {
     return "no such auction";
@@ -33,6 +33,8 @@ export const placeBid = async (auction: AuctionDto, bid: BidDTO) => {
   theAuction.highestBid = bid.amount;
   theAuction.highestBidder = bid.bidder;
   theAuction.bids.push(bid);
+
   await theAuction.save();
-  return auctionToDTO.bids;
+
+  return bid;
 };

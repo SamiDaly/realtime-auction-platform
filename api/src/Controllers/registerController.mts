@@ -1,7 +1,12 @@
 import bcrypt from "bcryptjs";
-import User, { convertToDto } from "../models/userSchema.mts";
+import User from "../models/User.mts";
+import { convertToDto } from "../models/User.mts";
 
-export const registerUser = async (name: string, email: string, password: string) => {
+export const registerUser = async (
+  name: string,
+  email: string,
+  password: string,
+) => {
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(password, salt);
 
