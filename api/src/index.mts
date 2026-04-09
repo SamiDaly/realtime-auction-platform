@@ -1,31 +1,17 @@
 import express, { json } from "express";
-
 import { createServer } from "node:http";
-
 import { Server } from "socket.io";
-
 import cors from "cors";
-
 import { config } from "dotenv";
-
 import mongoose from "mongoose";
-
 import { registerRouter } from "./Routes/registerRouter.mts";
-
 import { loginRouter } from "./Routes/loginRouter.mts";
-
 import cookieParser from "cookie-parser";
-
 import jwt from "jsonwebtoken";
-
 import type { AuctionForm } from "./type/AuctionForm.mts";
-
 import type { AuctionDto } from "./DTOs/AuctionDTO.mts";
-
 import type { BidDTO } from "./DTOs/BidDTO.mts";
-
 import Auction, { convertToAuctionDTO } from "./models/Auction.mts";
-
 import {
   createAuction,
   getAuctions,
