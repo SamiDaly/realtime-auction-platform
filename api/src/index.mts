@@ -61,8 +61,6 @@ io.use((socket, next) => {
 });
 
 io.on("connection", (socket) => {
-  console.log("a user connected");
-
   //post i DB
   socket.on("createAuction", async (auction: AuctionDto) => {
     auction.creator = socket.data.username;
