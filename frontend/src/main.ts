@@ -3,7 +3,7 @@ import type { AuctionForm } from "./Models/AuctionForm";
 import type { Bid } from "./Models/Bid";
 import "./style.css";
 import { io } from "socket.io-client";
-//startApp();
+
 // Hero-navigation
 
 document.getElementById("showLogin")?.addEventListener("click", () => {
@@ -27,7 +27,7 @@ document.getElementById("backFromRegister")?.addEventListener("click", () => {
 });
 
 // Register
-startApp();
+
 // Hero-navigation
 let currentAuctionId: number | null = null;
 document.getElementById("showLogin")?.addEventListener("click", () => {
