@@ -3,10 +3,8 @@ import type { AuctionForm } from "./Models/AuctionForm";
 import type { Bid } from "./Models/Bid";
 import "./style.css";
 import { io } from "socket.io-client";
-<<<<<<< HEAD
 startApp(); //tillfällig lösning för att starta appen, kommer att flyttas in i en funktion som körs efter inloggning/registrering
 // Register, inlogg och kolla om redan inloggad
-=======
 
 // Hero-navigation
 document.getElementById("showLogin")?.addEventListener("click", () => {
@@ -30,7 +28,6 @@ document.getElementById("backFromRegister")?.addEventListener("click", () => {
 });
 
 // Register
->>>>>>> 02a57fc54afc37ee97ea6a4d804743f94df416a0
 document.getElementById("registerForm")?.addEventListener("submit", async (e) => {
   e.preventDefault();
   const name = (document.getElementById("registerName") as HTMLInputElement).value;
@@ -79,16 +76,12 @@ function startApp() {
   document.getElementById("authSection")!.style.display = "none";
   document.getElementById("auctionSection")!.style.display = "block";
 
-<<<<<<< HEAD
   /*  När Sami lagt in allt klart:
    Anslut med token i headern */
-=======
->>>>>>> 02a57fc54afc37ee97ea6a4d804743f94df416a0
   const socket = io("http://localhost:3000", {
     auth: { token: localStorage.getItem("token") },
   });
 
-<<<<<<< HEAD
   // istället för nedan
   /*  const socket = io("http://localhost:3000", {
     withCredentials: true,
@@ -96,8 +89,6 @@ function startApp() {
 
   //inlogg logik
 
-=======
->>>>>>> 02a57fc54afc37ee97ea6a4d804743f94df416a0
   socket.on("connect", () => {
     console.log("socket:", socket.connected);
     socket.emit("getAuctions");
