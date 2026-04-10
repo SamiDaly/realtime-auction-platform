@@ -1,8 +1,13 @@
 import bcrypt from "bcryptjs";
 import User from "../models/User.mts";
 import { convertToDto } from "../models/User.mts";
+import jwt from "jsonwebtoken";
 
-export const registerUser = async (name: string, email: string, password: string) => {
+export const registerUser = async (
+  name: string,
+  email: string,
+  password: string,
+) => {
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(password, salt);
 
@@ -13,7 +18,13 @@ export const registerUser = async (name: string, email: string, password: string
   };
 
   const createdUser = await User.create(newUser);
-
+  const token = jwt.sign(
+    { username: createdUser.username, email: createdUser.email },
+    process.env.JWT_SECRET!,
+    {
+      expiresIn: "1h",
+    },
+  );
   return { userDto: convertToDto(createdUser), token };
 };
 // 1. Skapar salt med bcrypt
