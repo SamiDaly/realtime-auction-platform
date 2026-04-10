@@ -11,13 +11,12 @@ export const registerUser = async (
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(password, salt);
 
-  const newUser = {
+  const createdUser = await User.create({
     username: name,
     email,
     password: hashedPassword,
-  };
+  });
 
-  const createdUser = await User.create(newUser);
   const token = jwt.sign(
     { username: createdUser.username, email: createdUser.email },
     process.env.JWT_SECRET!,

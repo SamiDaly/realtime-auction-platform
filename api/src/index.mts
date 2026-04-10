@@ -109,7 +109,7 @@ io.on("connection", (socket) => {
       description: auctionForm.description,
       startPrice: auctionForm.startPrice,
       highestBid: 0,
-      creator: socket.data.username || "andrea",
+      creator: socket.data.username,
       highestBidder: null,
       endDateTime: auctionForm.endDateTime,
       status: auctionForm.status,
@@ -124,7 +124,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("place bid", async (auctionId: number, bid: BidDTO) => {
-    bid.bidder = "sara";
+    bid.bidder = socket.data.user.username;
     const auction = await Auction.findOne({ id: auctionId });
     console.log(auction);
     if (!auction) return;
