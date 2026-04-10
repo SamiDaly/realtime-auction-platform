@@ -2,7 +2,7 @@ import type { Auction } from "./Models/Auction";
 import type { AuctionForm } from "./Models/AuctionForm";
 import type { Bid } from "./Models/Bid";
 import "./style.css";
-import { io } from "socket.io-client";
+import { io, type Socket } from "socket.io-client";
 
 // Hero-navigation
 let currentAuctionId: number | null = null;
@@ -99,7 +99,7 @@ function startApp() {
       container.innerHTML = "";
 
       auctions.forEach((auction) => {
-        createAuctionHTML(auction, container);
+        createAuctionHTML(auction, container, socket);
       });
     });
 
