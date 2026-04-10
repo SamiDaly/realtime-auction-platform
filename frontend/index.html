@@ -51,19 +51,19 @@
         <h1>Skapa Auktion</h1>
         <hr class="section-divider" />
         <form id="auctionForm">
-          <label for="title">Title:</label>
+          <label for="title">Titel:</label>
           <input id="title" type="text" name="title" />
-          <label for="img">Image:</label>
+          <label for="img">Bild:</label>
           <input type="file" id="img" />
-          <label for="description">Description:</label>
+          <label for="description">Beskrivning:</label>
           <textarea id="description"></textarea>
-          <label for="startPrice">Start price:</label>
+          <label for="startPrice">Startpris:</label>
           <input id="startPrice" type="number" />
-          <label for="enddate">End date:</label>
+          <label for="enddate">Slutdatum:</label>
           <input id="enddate" type="date" />
-          <label for="endTime">Endtime:</label>
-          <input id="endTime" type="time" />
-          <button type="submit">Post auction</button>
+          <label for="endTime">Minuter:</label>
+          <input id="endTime" type="number" placeholder="Antal minuter" />
+          <button type="submit">Skapa Auktion</button>
         </form>
 
         <div id="auctions"></div>
@@ -74,7 +74,7 @@
 
         <form id="msgform">
           <input id="msgInput" class="hide" />
-          <button id="sendmsg" type="submit" class="hide">send message</button>
+          <button id="sendmsg" type="submit" class="hide">Skicka meddelande</button>
         </form>
       </div>
     </div>

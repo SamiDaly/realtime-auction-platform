@@ -21,46 +21,33 @@ import {
 config();
 
 const mongoUrl = process.env.MONGO_URI;
-
 const port = process.env.PORT || 3000;
-
 if (!mongoUrl)
   throw new Error("Could not find connection string in the env file");
 
 const app = express();
-
 const server = createServer(app);
 
 app.use(json());
-
 app.use(cors());
-
 app.use(cookieParser());
-
 app.use("/api/auth", registerRouter);
-
 app.use("/api/auth", loginRouter);
 
 const io = new Server(server, {
   cors: {
     origin: "http://localhost:5173",
-
     credentials: true,
   },
 });
 
 // Socket auth — verifierar JWT vid anslutning
-
 io.use((socket, next) => {
   try {
     const token = socket.handshake.auth.token;
-
     if (!token) return next(new Error("Unauthorized"));
-
     const decoded = jwt.verify(token, process.env.JWT_SECRET!);
-
     socket.data.user = decoded;
-
     next();
   } catch (error) {
     next(new Error("Invalid token"));
@@ -68,7 +55,6 @@ io.use((socket, next) => {
 });
 
 // Alla socket-events här
-
 io.on("connection", (socket) => {
   console.log("a user connected");
 
@@ -109,7 +95,7 @@ io.on("connection", (socket) => {
       description: auctionForm.description,
       startPrice: auctionForm.startPrice,
       highestBid: 0,
-      creator: socket.data.username,
+      creator: socket.data.user.username,
       highestBidder: null,
       endDateTime: auctionForm.endDateTime,
       status: auctionForm.status,

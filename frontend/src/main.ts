@@ -162,21 +162,21 @@ function createAuctionHTML(auction: Auction, container: HTMLElement, socket: Soc
   auctionDiv.id = auction.id.toString();
 
   const h2 = document.createElement("h2");
-  const price = document.createElement("h3");
-  const creator = document.createElement("h4");
   const img = document.createElement("img");
+  const price = document.createElement("h3");
   const description = document.createElement("p");
+  const creator = document.createElement("h4");
   const endTime = document.createElement("p");
 
   h2.innerHTML = auction.title;
-  price.innerHTML = auction.startPrice.toString() + "kr";
-  creator.innerHTML = auction.creator;
   img.src = auction.img;
+  price.innerHTML = auction.startPrice.toString() + " " + "kr";
   description.innerHTML = auction.description;
+  creator.innerHTML = "Auktion skapad av: " + auction.creator;
   endTime.innerHTML = minutesLeft.toString() + " minutes left";
 
   const joinBtn = document.createElement("button");
-  joinBtn.innerHTML = "Join auction";
+  joinBtn.innerHTML = "Buda på auktionen";
 
   joinBtn.addEventListener("click", () => {
     currentAuctionId = auction.id;
@@ -195,7 +195,7 @@ function createAuctionHTML(auction: Auction, container: HTMLElement, socket: Soc
     document.getElementById("sendmsg")?.classList.remove("hide");
   });
 
-  auctionDiv.append(h2, price, creator, img, description, endTime, joinBtn);
+  auctionDiv.append(h2, img, price, description, creator, endTime, joinBtn);
   container.append(auctionDiv);
 }
 

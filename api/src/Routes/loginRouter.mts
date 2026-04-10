@@ -3,7 +3,7 @@ import { loginUser } from "../Controllers/loginController.mts";
 
 export const loginRouter = express.Router();
 
-loginRouter.post("/", async (req, res) => {
+loginRouter.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
