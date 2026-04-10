@@ -129,7 +129,6 @@ function startApp() {
 
     const date = new Date(endDate + " " + endtime);
 
-<<<<<<< HEAD
     socket.emit("getAuctions");
 
     socket.on("postAuction", (auctions: Auction[]) => {
@@ -183,17 +182,6 @@ function startApp() {
       e.preventDefault();
       const msgInput = (document.getElementById("msgInput") as HTMLInputElement).value;
     });
-=======
-    const theNewAuction = {
-      title,
-      img,
-      description,
-      startPrice,
-      endDateTime: date,
-    } satisfies AuctionForm;
-
-    socket.emit("createAuction", theNewAuction);
->>>>>>> 02a57fc54afc37ee97ea6a4d804743f94df416a0
   });
 
   const createAuctionHTML = (auction: Auction, container: HTMLElement) => {
