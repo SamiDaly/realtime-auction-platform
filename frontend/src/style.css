@@ -184,3 +184,7 @@ form button:hover {
   font-size: 2rem;
   margin-bottom: 1rem;
 }
+
+.hide {
+  display: none;
+}
