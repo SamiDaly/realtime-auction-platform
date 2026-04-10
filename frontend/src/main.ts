@@ -140,7 +140,11 @@ function startApp() {
 
     // Nytt bud i realtid
     socket.on("NewBid", (bid: Bid) => {
-      createChatHTML(bid);
+      if (typeof bid == "string") {
+        alert(bid);
+      } else {
+        createChatHTML(bid);
+      }
     });
 
     // Skapa auktion

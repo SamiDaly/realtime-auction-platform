@@ -136,8 +136,8 @@ io.on("connection", (socket) => {
     console.log("Nytt bud:", newBid);
     //io.to(auction.id.toString()).emit("NewBid", newBid);
     //socket.emit("NewBid", newBid);
-    io.to(auctionId.toString()).emit("NewBid", bid);
-    console.log("budid:", auctionId);
+    io.to(auctionId.toString()).emit("NewBid", newBid);
+    //console.log("budid:", auctionId);
   });
 });
 
