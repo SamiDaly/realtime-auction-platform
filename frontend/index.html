@@ -46,10 +46,10 @@
       </div>
     </div>
 
-      <!-- Auktion-vy -->
+    <!-- Auktion-vy -->
       <div id="auctionSection" style="display: none">
       <div class="auction-header">
-      <h1>Skapa Auktion</h1>
+        <h1>Skapa Auktion</h1>
       <button id="logoutBtn" class="btn-outline">Logga ut</button>
       </div>
       <hr class="section-divider" />
@@ -71,13 +71,25 @@
       <div id="auctions"></div>
       </div>
 
-      <div id="budgivning">
-        <div id="chathistory"></div>
-
+    <!-- Auktion Detalj-vy -->
+      <div id="auctionDetail" class="hide">
+      <div class="detail-layout">
+      <div class="detail-info">
+      <h2 id="detailTitle"></h2>
+      <img id="detailImg" />
+      <h3 id="detailPrice"></h3>
+      <p id="detailDescription"></p>
+      <h4 id="detailCreator"></h4>
+      <p id="detailTime"></p>
+      </div>
+      <div class="detail-bidding">
+      <div id="chathistory"></div>
         <form id="msgform">
-          <input id="msgInput" class="hide" />
-          <button id="sendmsg" type="submit" class="hide">Skicka meddelande</button>
+          <input id="msgInput" type="number" placeholder="Ange bud i kr" />
+          <button id="sendmsg" type="submit">Lägg bud</button>
         </form>
+      </div></div>
+      <button id="backToAuctions" class="btn-link" style="color: #1a1a1a;">Tillbaka till auktioner</button>
       </div>
     </div>
     <script type="module" src="/src/main.ts"></script>

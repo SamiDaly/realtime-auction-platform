@@ -242,6 +242,10 @@ form button:hover {
   font-size: 1rem;
 }
 
+#auctionForm input::placeholder {
+  color: #999;
+}
+
 #auctionForm textarea {
   grid-column: 1 / -1;
   min-height: 120px;
@@ -330,4 +334,134 @@ form button:hover {
 
 #auctions > div button:hover {
   opacity: 0.85;
+}
+
+/* Budgivnings-sektion */
+#budgivning {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 0 2rem;
+}
+
+#chathistory {
+  background: #f5f5f5;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+#chathistory:empty::before {
+  content: "Inga bud ännu...";
+  color: #999;
+  font-style: italic;
+}
+
+#chathistory label {
+  display: inline-block;
+  padding: 0.5rem 0;
+  color: #1a1a1a;
+  font-size: 1rem;
+}
+
+#chathistory label:nth-child(odd) {
+  font-weight: bold;
+  margin-right: 0.5rem;
+}
+
+/* Budformulär */
+#msgform {
+  display: flex;
+  gap: 1rem;
+}
+
+#msgInput {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: #f5f5f5;
+  color: #1a1a1a;
+  font-family: 'Playfair Display', serif;
+  font-size: 1rem;
+}
+
+#msgInput::placeholder {
+  color: #999;
+}
+
+#sendmsg {
+  padding: 0.75rem 2rem;
+  background-color: #f18d29;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-family: 'Playfair Display', serif;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+#sendmsg:hover {
+  opacity: 0.85;
+}
+
+/* Auktionsdetalj */
+#auctionDetail {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 0 2rem;
+}
+
+.detail-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+.detail-info h2 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.detail-info img {
+  width: 100%;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.detail-info h3 {
+  font-size: 1.3rem;
+  color: #f18d29;
+  margin-bottom: 0.5rem;
+}
+
+.detail-info p {
+  color: #444;
+  margin-bottom: 0.5rem;
+}
+
+.detail-info h4 {
+  color: #666;
+  font-weight: 400;
+}
+
+.detail-bidding {
+  display: flex;
+  flex-direction: column;
+}
+
+.detail-bidding #chathistory {
+  flex: 1;
+  background: #f5f5f5;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.detail-bidding #msgform {
+  display: flex;
+  gap: 1rem;
 }
