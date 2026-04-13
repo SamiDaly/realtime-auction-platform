@@ -1,5 +1,6 @@
 import mongoose, { InferSchemaType, Schema, model } from "mongoose";
-import type { UserDto } from "./userDTO.mts";
+//import type { UserDto } from "./userDTO.mts";
+import { UserDto } from "../DTOs/userDTO.mts";
 
 export const userSchema = new Schema({
   username: { type: String, required: true },
