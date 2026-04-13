@@ -46,27 +46,29 @@
       </div>
     </div>
 
-      <!-- Auktions-sektion -->
+      <!-- Auktion-vy -->
       <div id="auctionSection" style="display: none">
-        <h1>Skapa Auktion</h1>
-        <hr class="section-divider" />
-        <form id="auctionForm">
-          <label for="title">Titel:</label>
-          <input id="title" type="text" name="title" />
-          <label for="img">Bild:</label>
-          <input type="file" id="img" />
-          <label for="description">Beskrivning:</label>
-          <textarea id="description"></textarea>
-          <label for="startPrice">Startpris:</label>
-          <input id="startPrice" type="number" />
-         <!---- <label for="enddate">End date:</label>
-          <input id="enddate" type="date" /> -->
-          <label for="endTime">Endtime:</label>
-          <input id="endTime" type="number" min="1" max="3" />
-          <button type="submit">Post auction</button>
-        </form>
-
-        <div id="auctions"></div>
+      <div class="auction-header">
+      <h1>Skapa Auktion</h1>
+      <button id="logoutBtn" class="btn-outline">Logga ut</button>
+      </div>
+      <hr class="section-divider" />
+      <form id="auctionForm">
+        <label for="title">Titel:</label>
+        <input id="title" type="text" name="title" />
+        <label for="img">Bild:</label>
+        <input type="file" id="img" />
+        <label for="description">Beskrivning:</label>
+        <textarea id="description"></textarea>
+        <label for="startPrice">Startpris:</label>
+        <input id="startPrice" type="number" />
+        <label for="enddate">Slutdatum:</label>
+        <input id="enddate" type="date" />
+        <label for="endTime">Minuter:</label>
+        <input id="endTime" type="number" placeholder="Antal minuter" />
+        <button type="submit">Skapa Auktion</button>
+      </form>
+      <div id="auctions"></div>
       </div>
 
       <div id="budgivning">
