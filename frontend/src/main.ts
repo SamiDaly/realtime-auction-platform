@@ -22,6 +22,18 @@ document.getElementById("backFromLogin")?.addEventListener("click", () => {
   document.getElementById("heroView")!.style.display = "block";
 });
 
+document.getElementById("logoutBtn")?.addEventListener("click", () => {
+  localStorage.clear();
+  document.body.style.backgroundColor = "";
+  document.body.style.color = "";
+  document.getElementById("auctionSection")!.style.display = "none";
+  document.getElementById("budgivning")!.style.display = "none";
+  document.getElementById("authSection")!.style.display = "flex";
+  document.getElementById("heroView")!.style.display = "flex";
+  document.getElementById("loginView")!.style.display = "none";
+  document.getElementById("registerView")!.style.display = "none";
+});
+
 document.getElementById("backFromRegister")?.addEventListener("click", () => {
   document.getElementById("registerView")!.style.display = "none";
   document.getElementById("heroView")!.style.display = "block";
