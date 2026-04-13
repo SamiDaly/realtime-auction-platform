@@ -1,6 +1,7 @@
-import { InferSchemaType, model, Schema } from "mongoose";
-import { AuctionDto } from "../DTOs/AuctionDTO.mts";
-import { BidDTO } from "../DTOs/BidDTO.mts";
+import { model, Schema } from "mongoose";
+import type { InferSchemaType } from "mongoose";
+import type { AuctionDto } from "../DTOs/AuctionDTO.mts";
+import type { BidDTO } from "../DTOs/BidDTO.mts";
 import { bidSchema } from "./Bid.mts";
 
 export const auctionSchema = new Schema(

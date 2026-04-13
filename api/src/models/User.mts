@@ -1,4 +1,5 @@
-import mongoose, { InferSchemaType, Schema, model } from "mongoose";
+import { Schema, model } from "mongoose";
+import type { InferSchemaType } from "mongoose";
 import type { UserDto } from "../DTOs/userDTO.mts";
 
 export const userSchema = new Schema({

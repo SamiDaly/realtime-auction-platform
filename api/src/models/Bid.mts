@@ -1,5 +1,6 @@
-import { InferSchemaType, Schema } from "mongoose";
-import { BidDTO } from "../DTOs/BidDTO.mts";
+import { Schema } from "mongoose";
+import type { InferSchemaType } from "mongoose";
+import type { BidDTO } from "../DTOs/BidDTO.mts";
 
 // Schema som beskriver en budgivning, med fält för belopp och budgivare.
 // Tidsstämplar används för att hålla reda på när budet lades,
