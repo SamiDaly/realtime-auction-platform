@@ -95,7 +95,7 @@ io.on("connection", (socket) => {
       description: auctionForm.description,
       startPrice: auctionForm.startPrice,
       highestBid: 0,
-      creator: socket.data.user.username,
+      creator: socket.data.user.username || "andrea",
       highestBidder: null,
       endDateTime: auctionForm.endDateTime,
       status: auctionForm.status,

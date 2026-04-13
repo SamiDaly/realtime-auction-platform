@@ -28,30 +28,39 @@ document.getElementById("backFromRegister")?.addEventListener("click", () => {
 });
 
 // Register
-document.getElementById("registerForm")?.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const name = (document.getElementById("registerName") as HTMLInputElement).value;
-  const email = (document.getElementById("registerEmail") as HTMLInputElement).value;
-  const password = (document.getElementById("registerPassword") as HTMLInputElement).value;
+document
+  .getElementById("registerForm")
+  ?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const name = (document.getElementById("registerName") as HTMLInputElement)
+      .value;
+    const email = (document.getElementById("registerEmail") as HTMLInputElement)
+      .value;
+    const password = (
+      document.getElementById("registerPassword") as HTMLInputElement
+    ).value;
 
-  const res = await fetch("http://localhost:3000/api/auth/register", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ name, email, password }),
+    const res = await fetch("http://localhost:3000/api/auth/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, email, password }),
+    });
+
+    const data = await res.json();
+    if (data.token) {
+      localStorage.setItem("token", data.token);
+      startApp();
+    }
   });
-
-  const data = await res.json();
-  if (data.token) {
-    localStorage.setItem("token", data.token);
-    startApp();
-  }
-});
 
 // Login
 document.getElementById("loginForm")?.addEventListener("submit", async (e) => {
   e.preventDefault();
-  const email = (document.getElementById("loginEmail") as HTMLInputElement).value;
-  const password = (document.getElementById("loginPassword") as HTMLInputElement).value;
+  const email = (document.getElementById("loginEmail") as HTMLInputElement)
+    .value;
+  const password = (
+    document.getElementById("loginPassword") as HTMLInputElement
+  ).value;
 
   const res = await fetch("http://localhost:3000/api/auth/login", {
     method: "POST",
@@ -119,12 +128,21 @@ function startApp() {
 
     const title = (document.getElementById("title") as HTMLInputElement).value;
     const img = (document.getElementById("img") as HTMLInputElement).value;
-    const description = (document.getElementById("description") as HTMLTextAreaElement).value;
-    const startPrice = parseInt((document.getElementById("startPrice") as HTMLInputElement).value);
-    const endtime = (document.getElementById("endTime") as HTMLInputElement).value;
+    const description = (
+      document.getElementById("description") as HTMLTextAreaElement
+    ).value;
+    const startPrice = parseInt(
+      (document.getElementById("startPrice") as HTMLInputElement).value,
+    );
+    /*const endDate = (document.getElementById("enddate") as HTMLInputElement)
+        .value;*/
+    const endtime = (document.getElementById("endTime") as HTMLInputElement)
+      .value;
 
     const MINUTE = 60000;
     const MinutesFromNow = new Date(Date.now() + parseInt(endtime) * MINUTE);
+
+    console.log("mins from now:", MinutesFromNow);
 
     const theNewAuction = {
       title,
@@ -154,7 +172,11 @@ function startApp() {
 }
 
 // Skapa HTML för en auktion
-function createAuctionHTML(auction: Auction, container: HTMLElement, socket: Socket) {
+function createAuctionHTML(
+  auction: Auction,
+  container: HTMLElement,
+  socket: Socket,
+) {
   const endDate = new Date(auction.endDateTime);
   const minutesLeft = Math.floor((endDate.getTime() - Date.now()) / 60000);
 
@@ -162,18 +184,19 @@ function createAuctionHTML(auction: Auction, container: HTMLElement, socket: Soc
   auctionDiv.id = auction.id.toString();
 
   const h2 = document.createElement("h2");
-  const img = document.createElement("img");
   const price = document.createElement("h3");
-  const description = document.createElement("p");
   const creator = document.createElement("h4");
+  const img = document.createElement("img");
+  const description = document.createElement("p");
   const endTime = document.createElement("p");
-
   h2.innerHTML = auction.title;
+  price.innerHTML = auction.startPrice.toString() + "kr";
+  creator.innerHTML = auction.creator;
   img.src = auction.img;
-  price.innerHTML = auction.startPrice.toString() + " " + "kr";
   description.innerHTML = auction.description;
-  creator.innerHTML = "Auktion skapad av: " + auction.creator;
   endTime.innerHTML = minutesLeft.toString() + " minutes left";
+
+  //skapa timer
 
   const joinBtn = document.createElement("button");
   joinBtn.innerHTML = "Buda på auktionen";
