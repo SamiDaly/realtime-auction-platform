@@ -27,30 +27,39 @@ document.getElementById("backFromRegister")?.addEventListener("click", () => {
 });
 
 // Register
-document.getElementById("registerForm")?.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const name = (document.getElementById("registerName") as HTMLInputElement).value;
-  const email = (document.getElementById("registerEmail") as HTMLInputElement).value;
-  const password = (document.getElementById("registerPassword") as HTMLInputElement).value;
+document
+  .getElementById("registerForm")
+  ?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const name = (document.getElementById("registerName") as HTMLInputElement)
+      .value;
+    const email = (document.getElementById("registerEmail") as HTMLInputElement)
+      .value;
+    const password = (
+      document.getElementById("registerPassword") as HTMLInputElement
+    ).value;
 
-  const res = await fetch("http://localhost:3000/api/auth/register", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ name, email, password }),
+    const res = await fetch("http://localhost:3000/api/auth/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, email, password }),
+    });
+
+    const data = await res.json();
+    if (data.token) {
+      localStorage.setItem("token", data.token);
+      startApp();
+    }
   });
-
-  const data = await res.json();
-  if (data.token) {
-    localStorage.setItem("token", data.token);
-    startApp();
-  }
-});
 
 // Login
 document.getElementById("loginForm")?.addEventListener("submit", async (e) => {
   e.preventDefault();
-  const email = (document.getElementById("loginEmail") as HTMLInputElement).value;
-  const password = (document.getElementById("loginPassword") as HTMLInputElement).value;
+  const email = (document.getElementById("loginEmail") as HTMLInputElement)
+    .value;
+  const password = (
+    document.getElementById("loginPassword") as HTMLInputElement
+  ).value;
 
   const res = await fetch("http://localhost:3000/api/auth/login", {
     method: "POST",
@@ -118,18 +127,24 @@ function startApp() {
     document.getElementById("auctionForm")?.addEventListener("submit", (e) => {
       e.preventDefault();
 
-      const title = (document.getElementById("title") as HTMLInputElement).value;
+      const title = (document.getElementById("title") as HTMLInputElement)
+        .value;
       const img = (document.getElementById("img") as HTMLInputElement).value;
-      const description = (document.getElementById("description") as HTMLTextAreaElement).value;
-      const startPrice = parseInt((document.getElementById("startPrice") as HTMLInputElement).value);
+      const description = (
+        document.getElementById("description") as HTMLTextAreaElement
+      ).value;
+      const startPrice = parseInt(
+        (document.getElementById("startPrice") as HTMLInputElement).value,
+      );
       /*const endDate = (document.getElementById("enddate") as HTMLInputElement)
         .value;*/
-      const endtime = (document.getElementById("endTime") as HTMLInputElement).value;
+      const endtime = (document.getElementById("endTime") as HTMLInputElement)
+        .value;
 
       const MINUTE = 60000;
       const MinutesFromNow = new Date(Date.now() + parseInt(endtime) * MINUTE);
 
-      //const date = new Date(endDate + " " + endtime);
+      console.log("mins from now:", MinutesFromNow);
 
       const theNewAuction = {
         title,
@@ -163,6 +178,8 @@ function startApp() {
       img.src = auction.img;
       description.innerHTML = auction.description;
       endTime.innerHTML = minutesLeft.toString() + " minutes left";
+
+      //skapa timer
 
       const joinBtn = document.createElement("button");
       joinBtn.innerHTML = "Join auction";
