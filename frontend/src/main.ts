@@ -237,7 +237,15 @@ function createAuctionHTML(
   const joinBtn = document.createElement("button");
   joinBtn.innerHTML = "Buda på auktionen";
 
+
+ // Kolla om auktionen är avslutad
+  const endDate = new Date(auction.endDateTime);
+  const minutesLeft = Math.floor((endDate.getTime() - Date.now()) / 60000);
   createCountdown(auction, endTime, joinBtn);
+
+  if (minutesLeft <= 0) {
+  auctionDiv.classList.add("ended");
+  }
 
   joinBtn.addEventListener("click", () => {
     currentAuctionId = auction.id;

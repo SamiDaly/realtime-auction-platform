@@ -87,6 +87,7 @@ io.on("connection", (socket) => {
 
   socket.on("getAuctions", async () => {
     const auctions = await getAuctions();
+      console.log("Antal auktioner:", auctions.length);
     socket.emit("postAuction", auctions);
   });
 
