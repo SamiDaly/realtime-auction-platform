@@ -141,6 +141,11 @@ function startApp() {
     }
   });
 
+  socket.on("displayWinner", (auction: Auction) => {
+    console.log(" vinnande Auction:", auction);
+    displayWinner(auction);
+  });
+
   // Skapa auktion
   document.getElementById("auctionForm")?.addEventListener("submit", (e) => {
     e.preventDefault();
