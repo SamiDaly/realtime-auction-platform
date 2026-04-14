@@ -1,7 +1,6 @@
 import type { AuctionDto } from "../DTOs/AuctionDTO.mts";
 import type { BidDTO } from "../DTOs/BidDTO.mts";
 import Auction, { convertToAuctionDTO } from "../models/Auction.mts";
-import { AuctionCollection } from "../models/AuctionCollection.mts";
 import type { AuctionForm } from "../type/AuctionForm.mts";
 
 export const createAuction = async (auction: AuctionForm) => {
@@ -10,7 +9,9 @@ export const createAuction = async (auction: AuctionForm) => {
 };
 
 export const getAuctions = async () => {
-  return await AuctionCollection.find();
+  await (Auction as any).closeExpired();
+  const auctions = await Auction.find();
+  return auctions.map(convertToAuctionDTO);
 };
 
 export const placeBid = async (auction: AuctionDto, bid: BidDTO) => {

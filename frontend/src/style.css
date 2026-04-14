@@ -336,6 +336,10 @@ form button:hover {
   opacity: 0.85;
 }
 
+#auctions > div.ended {
+  opacity: 0.5;
+}
+
 /* Budgivnings-sektion */
 #budgivning {
   max-width: 900px;

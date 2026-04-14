@@ -120,7 +120,15 @@ function startApp() {
     const container = document.getElementById("auctions")!;
     container.innerHTML = "";
 
-    auctions.forEach((auction) => {
+    const sorted = auctions.sort((a, b) => {
+      const aActive = new Date(a.endDateTime).getTime() > Date.now();
+      const bActive = new Date(b.endDateTime).getTime() > Date.now();
+      if (aActive && !bActive) return -1;
+      if (!aActive && bActive) return 1;
+      return 0;
+    });
+
+    sorted.forEach((auction) => {
       createAuctionHTML(auction, container, socket);
     });
   });
@@ -212,19 +220,17 @@ function createAuctionHTML(
   img.src = auction.img;
   description.innerHTML = auction.description;
 
-  if (minutesLeft <= 0) {
-    endTime.innerHTML = auction.highestBidder
-      ? "Avslutad — Vinnare: " + auction.highestBidder
-      : "Avslutad — inga bud";
-  } else {
-    endTime.innerHTML = minutesLeft + " minuter kvar";
-  }
-
   const joinBtn = document.createElement("button");
   joinBtn.innerHTML = "Buda på auktionen";
 
   if (minutesLeft <= 0) {
+    endTime.innerHTML = auction.highestBidder
+      ? "Avslutad — Vinnare: " + auction.highestBidder
+      : "Avslutad — inga bud";
     joinBtn.classList.add("hide");
+    auctionDiv.classList.add("ended");
+  } else {
+    endTime.innerHTML = minutesLeft + " minuter kvar";
   }
 
   joinBtn.addEventListener("click", () => {
