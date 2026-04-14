@@ -58,6 +58,33 @@ io.use((socket, next) => {
 io.on("connection", (socket) => {
   console.log("a user connected");
 
+  function endAuction(auctionId: number) {
+    (async () => {
+      const auction = await Auction.findOne({ id: auctionId });
+
+      if (!auction) return;
+
+      if (auction.bids.length === 0) {
+        io.to(auctionId.toString()).emit("displayWinner", {
+          ...auction.toObject(),
+          highestBidder: "No bids",
+        });
+        return;
+      }
+
+      const highestBid = auction.bids.reduce((max, bid) =>
+        bid.amount > max.amount ? bid : max,
+      );
+
+      auction.highestBidder = highestBid.bidder;
+      auction.highestBid = highestBid.amount;
+
+      await auction.save();
+
+      io.to(auctionId.toString()).emit("displayWinner", auction);
+    })();
+  }
+
   socket.on("getAuctions", async () => {
     const auctions = await getAuctions();
     socket.emit("postAuction", auctions);
@@ -73,10 +100,7 @@ io.on("connection", (socket) => {
       const foundChat: BidDTO[] = foundAuction.bids;
       console.log("hittade chatten", foundChat);
       if (foundChat) {
-        // socket.emit("chatHistory", foundChat);
         io.to(auctionId.toString()).emit("chatHistory", foundChat);
-        // io.to(auctionId).emit("chatHistory", foundChat);
-        console.log("id:", auctionId);
       }
     }
   });
@@ -104,26 +128,30 @@ io.on("connection", (socket) => {
 
     await createAuction(createdAuction);
 
+    const timeLeft =
+      new Date(createdAuction.endDateTime).getTime() - Date.now();
+
+    if (timeLeft > 0) {
+      setTimeout(() => {
+        endAuction(createdAuction.id);
+      }, timeLeft);
+    }
+
     const auctions = await getAuctions();
-    console.log(auctions);
     socket.emit("postAuction", auctions);
   });
 
   socket.on("place bid", async (auctionId: number, bid: BidDTO) => {
     bid.bidder = socket.data.user.username;
     const auction = await Auction.findOne({ id: auctionId });
-    console.log(auction);
+
     if (!auction) return;
     auction.bids.push(bid);
 
     const auctionDTO = convertToAuctionDTO(auction);
     const newBid = await placeBid(auctionDTO, bid);
 
-    console.log("Nytt bud:", newBid);
-    //io.to(auction.id.toString()).emit("NewBid", newBid);
-    //socket.emit("NewBid", newBid);
     io.to(auctionId.toString()).emit("NewBid", newBid);
-    //console.log("budid:", auctionId);
   });
 });
 
