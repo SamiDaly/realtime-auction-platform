@@ -1,5 +1,4 @@
 import type { Auction } from "./Models/Auction";
-import type { Bid } from "./Models/Bid";
 
 export function createCountdown(
   auction: Auction,
@@ -27,13 +26,4 @@ export function createCountdown(
   }, 1000);
 
   return () => clearInterval(interval);
-}
-
-export function gettimeLeft(auction: Auction) {
-  const endDate = new Date(auction.endDateTime).getTime();
-  const now = Date.now();
-
-  const distance = endDate - now;
-
-  return Math.max(0, Math.floor(distance / 1000));
 }

@@ -1,4 +1,4 @@
-import { createCountdown, gettimeLeft } from "./countDown";
+import { createCountdown } from "./countDown";
 import type { Auction } from "./Models/Auction";
 import type { AuctionForm } from "./Models/AuctionForm";
 import type { Bid } from "./Models/Bid";
@@ -198,9 +198,6 @@ function createAuctionHTML(
   container: HTMLElement,
   socket: Socket,
 ) {
-  const endDate = new Date(auction.endDateTime);
-  const minutesLeft = Math.floor((endDate.getTime() - Date.now()) / 60000);
-
   const auctionDiv = document.createElement("div");
   auctionDiv.id = auction.id.toString();
 
@@ -216,21 +213,10 @@ function createAuctionHTML(
   creator.innerHTML = "Skapad av: " + auction.creator;
   img.src = auction.img;
   description.innerHTML = auction.description;
-  /*
-  if (minutesLeft <= 0) {
-    endTime.innerHTML = auction.highestBidder
-      ? "Avslutad — Vinnare: " + auction.highestBidder
-      : "Avslutad — inga bud";
-  } else {
-    endTime.innerHTML = minutesLeft + " minuter kvar";
-  }*/
 
   const joinBtn = document.createElement("button");
   joinBtn.innerHTML = "Buda på auktionen";
-  /*
-  if (minutesLeft <= 0) {
-    joinBtn.classList.add("hide");
-  }*/
+
   createCountdown(auction, endTime, joinBtn);
 
   joinBtn.addEventListener("click", () => {
@@ -238,19 +224,12 @@ function createAuctionHTML(
     socket.emit("joinAuction", currentAuctionId.toString());
 
     // Dölj auktionslistan och formuläret
-    /*document.getElementById("auctionForm")?.classList.add("hide");
-    document.getElementById("auctions")?.classList.add("hide");*/
     document.getElementById("auctionForm")?.classList.add("hide");
-    const allAuctions = document.querySelectorAll("#auctions > div");
-    allAuctions.forEach((element) => {
-      if (element.id !== auction.id.toString()) {
-        element.classList.add("hide");
-      }
-    });
-    joinBtn.classList.add("hide");
+    document.getElementById("auctions")?.classList.add("hide");
 
+    const sendmsgBtn = document.getElementById("sendmsg") as HTMLButtonElement;
     document.getElementById("msgInput")?.classList.remove("hide");
-    document.getElementById("sendmsg")?.classList.remove("hide");
+    sendmsgBtn?.classList.remove("hide");
 
     // Fyll i detaljer
     document.getElementById("detailTitle")!.innerHTML = auction.title;
@@ -262,6 +241,9 @@ function createAuctionHTML(
       auction.description;
     document.getElementById("detailCreator")!.innerHTML =
       "Skapad av: " + auction.creator;
+    const timedetails = document.getElementById("detailTime");
+    if (timedetails && sendmsgBtn)
+      createCountdown(auction, timedetails, sendmsgBtn);
 
     // Visa detaljvyn
     document.getElementById("auctionDetail")?.classList.remove("hide");
@@ -290,6 +272,7 @@ function createChatHTML(bid: Bid) {
 function displayWinner(auction: Auction) {
   const winnerDiv = document.getElementById("winner");
   if (winnerDiv) {
+    winnerDiv.innerHTML = "";
     const h3 = document.createElement("h3");
     const h4 = document.createElement("h4");
 
@@ -298,7 +281,3 @@ function displayWinner(auction: Auction) {
     winnerDiv.append(h3, h4);
   }
 }
-
-//utse vinnare
-//kontrollera om new bid är 1 sekund eller mindre ifrån distance
-// om det är det

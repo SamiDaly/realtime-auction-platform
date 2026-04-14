@@ -61,11 +61,11 @@
         <label for="description">Beskrivning:</label>
         <textarea id="description"></textarea>
         <label for="startPrice">Startpris:</label>
-        <input id="startPrice" type="number" />
+        <input id="startPrice" type="number" min="1" />
        <!---- <label for="enddate">Slutdatum:</label>
         <input id="enddate" type="date" /> -->
         <label for="endTime">Minuter:</label>
-        <input id="endTime" type="number" placeholder="Antal minuter" />
+        <input id="endTime" type="number" placeholder="Antal minuter" min="1" max="4"/>
         <button type="submit">Skapa Auktion</button>
       </form>
       <div id="auctions"></div>
@@ -83,14 +83,19 @@
       <p id="detailTime"></p>
       </div>
       <div class="detail-bidding">
+
       <div id="chathistory"></div>
+       
         <form id="msgform">
-          <input id="msgInput" type="number" placeholder="Ange bud i kr" />
-          <button id="sendmsg" type="submit">Lägg bud</button>
+          <input id="msgInput" type="number" placeholder="Ange bud i kr"/>
+          <button id="sendmsg" type="submit" class="hide">Lägg bud</button>
         </form>
-      </div></div>
+     
       <button id="backToAuctions" class="btn-link" style="color: #1a1a1a;">Tillbaka till auktioner</button>
-      </div>
+      
+
+
+
       <div id="winner"></div>
     </div>
     <script type="module" src="/src/main.ts"></script>
