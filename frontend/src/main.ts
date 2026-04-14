@@ -135,42 +135,36 @@ function startApp() {
     e.preventDefault();
 
     const title = (document.getElementById("title") as HTMLInputElement).value;
-    //const img = (document.getElementById("img") as HTMLInputElement).value;
-
     const imgInput = document.getElementById("img") as HTMLInputElement;
-    // Hämtar första valda bilden från file input
     const file = imgInput.files?.[0];
-
-    let img = "";
-
-    if (file) {
-      // Skapar en temporär URL så bilden kan visas i webbläsaren
-      img = URL.createObjectURL(file);
-    }
 
     const description = (document.getElementById("description") as HTMLTextAreaElement).value;
     const startPrice = parseInt((document.getElementById("startPrice") as HTMLInputElement).value);
-    /*const endDate = (document.getElementById("enddate") as HTMLInputElement)
-        .value;*/
     const endtime = (document.getElementById("endTime") as HTMLInputElement).value;
 
     const MINUTE = 60000;
     const MinutesFromNow = new Date(Date.now() + parseInt(endtime) * MINUTE);
 
-    console.log("mins from now:", MinutesFromNow);
+    if (!file) return;
 
-    const theNewAuction = {
-      title,
-      img,
-      description,
-      startPrice,
-      endDateTime: MinutesFromNow,
-    } satisfies AuctionForm;
+    const reader = new FileReader();
 
-    console.log(theNewAuction);
-    socket.emit("createAuction", theNewAuction);
+    reader.onload = () => {
+      const img = reader.result as string;
+
+      const theNewAuction = {
+        title,
+        img,
+        description,
+        startPrice,
+        endDateTime: MinutesFromNow,
+      } satisfies AuctionForm;
+
+      socket.emit("createAuction", theNewAuction);
+    };
+
+    reader.readAsDataURL(file);
   });
-
   // Lägg bud
   document.getElementById("msgform")?.addEventListener("submit", (e) => {
     e.preventDefault();
