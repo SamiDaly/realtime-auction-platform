@@ -189,7 +189,7 @@ function startApp() {
         img,
         description,
         startPrice,
-        endDateTime: MinutesFromNow,
+        endDateTime: MinutesFromNow.toISOString(),
       } satisfies AuctionForm;
 
       socket.emit("createAuction", theNewAuction);
@@ -241,10 +241,18 @@ function createAuctionHTML(
 
  // Kolla om auktionen är avslutad
   const endDate = new Date(auction.endDateTime);
-  const minutesLeft = Math.floor((endDate.getTime() - Date.now()) / 60000);
+  const timeLeft = endDate.getTime() - Date.now();
+
+  // Console log för att debugga datum och tid
+  console.log("DEBUG:", {
+  raw: auction.endDateTime,
+  parsed: endDate,
+  timeLeft,
+});
+
   createCountdown(auction, endTime, joinBtn);
 
-  if (minutesLeft <= 0) {
+  if (timeLeft <= 0) {
   auctionDiv.classList.add("ended");
   }
 
