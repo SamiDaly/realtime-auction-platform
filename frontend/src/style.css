@@ -177,7 +177,7 @@ form button:hover {
 }
 
 .hide {
-  display: none;
+ display: none !important;
 }
 
 /* Auktions-sektion */
