@@ -238,22 +238,21 @@ function createAuctionHTML(
   const joinBtn = document.createElement("button");
   joinBtn.innerHTML = "Buda på auktionen";
 
-
- // Kolla om auktionen är avslutad
+  // Kolla om auktionen är avslutad
   const endDate = new Date(auction.endDateTime);
   const timeLeft = endDate.getTime() - Date.now();
 
   // Console log för att debugga datum och tid
   console.log("DEBUG:", {
-  raw: auction.endDateTime,
-  parsed: endDate,
-  timeLeft,
-});
+    raw: auction.endDateTime,
+    parsed: endDate,
+    timeLeft,
+  });
 
   createCountdown(auction, endTime, joinBtn);
 
   if (timeLeft <= 0) {
-  auctionDiv.classList.add("ended");
+    auctionDiv.classList.add("ended");
   }
 
   joinBtn.addEventListener("click", () => {

@@ -71,7 +71,7 @@ io.on("connection", (socket) => {
         });
         return;
       }
-      await auction.save();
+      //  await auction.save();
 
       const highestBid = auction.bids.reduce((max, bid) =>
         bid.amount > max.amount ? bid : max,
@@ -142,7 +142,8 @@ io.on("connection", (socket) => {
     }
 
     const auctions = await getAuctions();
-    socket.emit("postAuction", auctions);
+    //socket.emit("postAuction", auctions);
+    io.emit("postAuction", auctions);
   });
 
   socket.on("place bid", async (auctionId: number, bid: BidDTO) => {
@@ -152,7 +153,7 @@ io.on("connection", (socket) => {
     const auction = await Auction.findOne({ id: auctionId });
 
     if (!auction) return;
-    auction.bids.push(bid);
+    // auction.bids.push(bid);
 
     const auctionDTO = convertToAuctionDTO(auction);
     const newBid = await placeBid(auctionDTO, bid);
