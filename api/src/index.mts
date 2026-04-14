@@ -69,9 +69,9 @@ io.on("connection", (socket) => {
           ...auction.toObject(),
           highestBidder: "No bids",
         });
+        await auction.save();
         return;
       }
-      //  await auction.save();
 
       const highestBid = auction.bids.reduce((max, bid) =>
         bid.amount > max.amount ? bid : max,
