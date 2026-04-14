@@ -11,7 +11,7 @@ body {
   min-height: 100vh;
 }
 
-/* Auth-sektion — startsida med hero */
+/* Auth-sektion */
 #authSection {
   min-height: 100vh;
   background-image: url('/records.jpg');
@@ -25,7 +25,6 @@ body {
   position: relative;
 }
 
-/* Mörk overlay så texten syns */
 #authSection::before {
   content: '';
   position: absolute;
@@ -36,25 +35,60 @@ body {
   background: rgba(0, 0, 0, 0.5);
 }
 
-/* Innehållet ovanpå overlay */
 #authSection > * {
   position: relative;
   z-index: 1;
 }
 
-#authSection h1 { 
+#authSection h1 {
   font-size: 4rem;
   font-style: italic;
   margin-bottom: 1rem;
+  text-align: center;
+  width: 100%;
 }
 
 #authSection p {
   font-size: 1.2rem;
   max-width: 500px;
   margin-bottom: 2rem;
+  text-align: center;
+  width: 100%;
 }
 
-/* Formulär */
+/* Hero-knappar */
+.hero-buttons {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+}
+
+#heroView {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+/* Login/Register-vyer */
+#loginView,
+#registerView {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+#loginView h2,
+#registerView h2 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+/* Formulär (auth) */
 form {
   display: flex;
   flex-direction: column;
@@ -62,11 +96,6 @@ form {
   width: 100%;
   max-width: 400px;
   margin-bottom: 2rem;
-}
-
-form h2 {
-  font-size: 1.8rem;
-  margin-bottom: 0.5rem;
 }
 
 form input {
@@ -97,33 +126,18 @@ form button:hover {
   opacity: 0.85;
 }
 
-/* Login-knapp — fylld blå */
 #loginForm button {
   background-color: #ffffff;
   color: #000000;
 }
 
-/* Register-knapp — outline */
 #registerForm button {
   background-color: transparent;
   border: 2px solid #ffffff;
   color: #fff;
 }
 
-/* Auktions-sektion — dold tills inloggad */
-#auctionSection {
-  padding: 2rem;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-/* Hero-knappar */
-.hero-buttons {
-  display: flex;
-  gap: 1.5rem;
-  justify-content: center;
-}
-
+/* Knappstilar */
 .btn-filled {
   padding: 0.75rem 2.5rem;
   background-color: #ffffff;
@@ -151,15 +165,6 @@ form button:hover {
   opacity: 0.85;
 }
 
-/* Hero-sektion */
-#heroView {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-}
-
-/* Tillbaka-knapp i login/register */
 .btn-link {
   background: none;
   border: none;
@@ -171,27 +176,9 @@ form button:hover {
   text-decoration: underline;
 }
 
-#loginView,
-#registerView {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-}
-
-#loginView h2,
-#registerView h2 {
-  font-size: 2rem;
-  margin-bottom: 1rem;
-}
-
 .hide {
   display: none;
 }
-
-
-
-
 
 /* Auktions-sektion */
 #auctionSection {
@@ -203,24 +190,31 @@ form button:hover {
   min-height: 100vh;
 }
 
-#auctionSection h1 {
-  font-size: 2.5rem;
+/* Header med rubrik + logga ut */
+.auction-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 0.5rem;
 }
 
-/* Blå linje under rubriken */
+#auctionSection h1 {
+  font-size: 2.5rem;
+}
+
+#auctionSection #logoutBtn {
+  padding: 0.5rem 1.5rem;
+  font-size: 0.95rem;
+  color: #1a1a1a;
+  border-color: #1a1a1a;
+}
+
 .section-divider {
   border: none;
   height: 3px;
-  /* background-color: #1d4875; */
   background-color: #f18d29;
   margin-bottom: 2rem;
 }
-
-
-
-
-
 
 /* Skapa auktion-formuläret */
 #auctionForm {
@@ -248,6 +242,10 @@ form button:hover {
   font-size: 1rem;
 }
 
+#auctionForm input::placeholder {
+  color: #999;
+}
+
 #auctionForm textarea {
   grid-column: 1 / -1;
   min-height: 120px;
@@ -273,27 +271,9 @@ form button:hover {
 /* Auktionslista */
 #auctions {
   margin-top: 3rem;
-}
-
-#auctions h2 {
-  font-size: 1.5rem;
-  margin-bottom: 0.5rem;
-}
-
-
-
-
-/* Auktionslista */
-#auctions {
-  margin-top: 3rem;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 1.5rem;
-}
-
-#auctions h2 {
-  font-size: 1.8rem;
-  margin-bottom: 1rem;
 }
 
 #auctions > div {
@@ -354,4 +334,134 @@ form button:hover {
 
 #auctions > div button:hover {
   opacity: 0.85;
+}
+
+/* Budgivnings-sektion */
+#budgivning {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 0 2rem;
+}
+
+#chathistory {
+  background: #f5f5f5;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+#chathistory:empty::before {
+  content: "Inga bud ännu...";
+  color: #999;
+  font-style: italic;
+}
+
+#chathistory label {
+  display: inline-block;
+  padding: 0.5rem 0;
+  color: #1a1a1a;
+  font-size: 1rem;
+}
+
+#chathistory label:nth-child(odd) {
+  font-weight: bold;
+  margin-right: 0.5rem;
+}
+
+/* Budformulär */
+#msgform {
+  display: flex;
+  gap: 1rem;
+}
+
+#msgInput {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: #f5f5f5;
+  color: #1a1a1a;
+  font-family: 'Playfair Display', serif;
+  font-size: 1rem;
+}
+
+#msgInput::placeholder {
+  color: #999;
+}
+
+#sendmsg {
+  padding: 0.75rem 2rem;
+  background-color: #f18d29;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-family: 'Playfair Display', serif;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+#sendmsg:hover {
+  opacity: 0.85;
+}
+
+/* Auktionsdetalj */
+#auctionDetail {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 0 2rem;
+}
+
+.detail-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+.detail-info h2 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.detail-info img {
+  width: 100%;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.detail-info h3 {
+  font-size: 1.3rem;
+  color: #f18d29;
+  margin-bottom: 0.5rem;
+}
+
+.detail-info p {
+  color: #444;
+  margin-bottom: 0.5rem;
+}
+
+.detail-info h4 {
+  color: #666;
+  font-weight: 400;
+}
+
+.detail-bidding {
+  display: flex;
+  flex-direction: column;
+}
+
+.detail-bidding #chathistory {
+  flex: 1;
+  background: #f5f5f5;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.detail-bidding #msgform {
+  display: flex;
+  gap: 1rem;
 }

@@ -1,8 +1,8 @@
-import { AuctionDto } from "../DTOs/AuctionDTO.mts";
-import { BidDTO } from "../DTOs/BidDTO.mts";
+import type { AuctionDto } from "../DTOs/AuctionDTO.mts";
+import type { BidDTO } from "../DTOs/BidDTO.mts";
 import Auction, { convertToAuctionDTO } from "../models/Auction.mts";
 import { AuctionCollection } from "../models/AuctionCollection.mts";
-import { AuctionForm } from "../type/AuctionForm.mts";
+import type { AuctionForm } from "../type/AuctionForm.mts";
 
 export const createAuction = async (auction: AuctionForm) => {
   const theNewAuction = await Auction.create(auction);

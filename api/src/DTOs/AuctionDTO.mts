@@ -1,4 +1,4 @@
-import { BidDTO } from "./BidDTO.mts";
+import type { BidDTO } from "./BidDTO.mts";
 
 export type AuctionDto = {
   id: number;

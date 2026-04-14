@@ -22,9 +22,26 @@ document.getElementById("backFromLogin")?.addEventListener("click", () => {
   document.getElementById("heroView")!.style.display = "block";
 });
 
+document.getElementById("logoutBtn")?.addEventListener("click", () => {
+  localStorage.clear();
+  document.body.style.backgroundColor = "";
+  document.body.style.color = "";
+  document.getElementById("auctionSection")!.style.display = "none";
+  document.getElementById("authSection")!.style.display = "flex";
+  document.getElementById("heroView")!.style.display = "flex";
+  document.getElementById("loginView")!.style.display = "none";
+  document.getElementById("registerView")!.style.display = "none";
+});
+
 document.getElementById("backFromRegister")?.addEventListener("click", () => {
   document.getElementById("registerView")!.style.display = "none";
   document.getElementById("heroView")!.style.display = "block";
+});
+
+document.getElementById("backToAuctions")?.addEventListener("click", () => {
+  document.getElementById("auctionDetail")?.classList.add("hide");
+  document.getElementById("auctionForm")?.classList.remove("hide");
+  document.getElementById("auctions")?.classList.remove("hide");
 });
 
 // Register
@@ -189,33 +206,45 @@ function createAuctionHTML(
   const img = document.createElement("img");
   const description = document.createElement("p");
   const endTime = document.createElement("p");
+
   h2.innerHTML = auction.title;
   price.innerHTML = auction.startPrice.toString() + "kr";
-  creator.innerHTML = auction.creator;
+  creator.innerHTML = "Skapad av: " + auction.creator;
   img.src = auction.img;
   description.innerHTML = auction.description;
-  endTime.innerHTML = minutesLeft.toString() + " minutes left";
 
-  //skapa timer
+  if (minutesLeft <= 0) {
+    endTime.innerHTML = auction.highestBidder
+      ? "Avslutad — Vinnare: " + auction.highestBidder
+      : "Avslutad — inga bud";
+  } else {
+    endTime.innerHTML = minutesLeft + " minuter kvar";
+  }
 
   const joinBtn = document.createElement("button");
   joinBtn.innerHTML = "Buda på auktionen";
+
+  if (minutesLeft <= 0) {
+    joinBtn.classList.add("hide");
+  }
 
   joinBtn.addEventListener("click", () => {
     currentAuctionId = auction.id;
     socket.emit("joinAuction", currentAuctionId.toString());
 
+    // Dölj auktionslistan och formuläret
     document.getElementById("auctionForm")?.classList.add("hide");
-    const allAuctions = document.querySelectorAll("#auctions > div");
-    allAuctions.forEach((element) => {
-      if (element.id !== auction.id.toString()) {
-        element.classList.add("hide");
-      }
-    });
-    joinBtn.classList.add("hide");
+    document.getElementById("auctions")?.classList.add("hide");
 
-    document.getElementById("msgInput")?.classList.remove("hide");
-    document.getElementById("sendmsg")?.classList.remove("hide");
+    // Fyll i detaljer
+    document.getElementById("detailTitle")!.innerHTML = auction.title;
+    (document.getElementById("detailImg") as HTMLImageElement).src = auction.img;
+    document.getElementById("detailPrice")!.innerHTML = auction.startPrice + " kr";
+    document.getElementById("detailDescription")!.innerHTML = auction.description;
+    document.getElementById("detailCreator")!.innerHTML = "Skapad av: " + auction.creator;
+
+    // Visa detaljvyn
+    document.getElementById("auctionDetail")?.classList.remove("hide");
   });
 
   auctionDiv.append(h2, img, price, description, creator, endTime, joinBtn);
@@ -228,8 +257,8 @@ function createChatHTML(bid: Bid) {
   if (chatDiv) {
     const bidder = document.createElement("label");
     const amount = document.createElement("label");
-    bidder.innerHTML = bid.bidder;
-    amount.innerHTML = JSON.stringify(bid.amount);
+    bidder.innerHTML = "Budgivare: " + bid.bidder;
+    amount.innerHTML = JSON.stringify(bid.amount) + " kr" + " - " + new Date(bid.time).toLocaleTimeString();
     chatDiv.append(bidder, amount);
   }
 }
