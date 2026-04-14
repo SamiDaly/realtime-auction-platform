@@ -135,27 +135,18 @@ function startApp() {
     e.preventDefault();
 
     const title = (document.getElementById("title") as HTMLInputElement).value;
-    const img = (document.getElementById("img") as HTMLInputElement).value;
+    //const img = (document.getElementById("img") as HTMLInputElement).value;
 
     const imgInput = document.getElementById("img") as HTMLInputElement;
-    const fileName = document.getElementById("fileName") as HTMLElement;
-    const imgPreview = document.getElementById("imgPreview") as HTMLImageElement;
+    // Hämtar första valda bilden från file input
+    const file = imgInput.files?.[0];
 
-    imgInput.addEventListener("change", () => {
-      const file = imgInput.files?.[0];
+    let img = "";
 
-      if (!file) {
-        fileName.textContent = "Ingen bild vald";
-        imgPreview.style.display = "none";
-        return;
-      }
-
-      fileName.textContent = file.name;
-
-      const url = URL.createObjectURL(file);
-      imgPreview.src = url;
-      imgPreview.style.display = "block";
-    });
+    if (file) {
+      // Skapar en temporär URL så bilden kan visas i webbläsaren
+      img = URL.createObjectURL(file);
+    }
 
     const description = (document.getElementById("description") as HTMLTextAreaElement).value;
     const startPrice = parseInt((document.getElementById("startPrice") as HTMLInputElement).value);
