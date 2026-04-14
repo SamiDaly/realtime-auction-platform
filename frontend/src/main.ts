@@ -1,3 +1,4 @@
+import { createCountdown, gettimeLeft } from "./countDown";
 import type { Auction } from "./Models/Auction";
 import type { AuctionForm } from "./Models/AuctionForm";
 import type { Bid } from "./Models/Bid";
@@ -7,6 +8,9 @@ import { io, type Socket } from "socket.io-client";
 let currentAuctionId: number | null = null;
 
 // Hero-navigation
+
+let currentAuctionId: number | null = null;
+
 document.getElementById("showLogin")?.addEventListener("click", () => {
   document.getElementById("heroView")!.style.display = "none";
   document.getElementById("loginView")!.style.display = "flex";
@@ -151,15 +155,12 @@ function startApp() {
     const startPrice = parseInt(
       (document.getElementById("startPrice") as HTMLInputElement).value,
     );
-    /*const endDate = (document.getElementById("enddate") as HTMLInputElement)
-        .value;*/
+
     const endtime = (document.getElementById("endTime") as HTMLInputElement)
       .value;
 
     const MINUTE = 60000;
     const MinutesFromNow = new Date(Date.now() + parseInt(endtime) * MINUTE);
-
-    console.log("mins from now:", MinutesFromNow);
 
     const theNewAuction = {
       title,
@@ -238,10 +239,14 @@ function createAuctionHTML(
 
     // Fyll i detaljer
     document.getElementById("detailTitle")!.innerHTML = auction.title;
-    (document.getElementById("detailImg") as HTMLImageElement).src = auction.img;
-    document.getElementById("detailPrice")!.innerHTML = auction.startPrice + " kr";
-    document.getElementById("detailDescription")!.innerHTML = auction.description;
-    document.getElementById("detailCreator")!.innerHTML = "Skapad av: " + auction.creator;
+    (document.getElementById("detailImg") as HTMLImageElement).src =
+      auction.img;
+    document.getElementById("detailPrice")!.innerHTML =
+      auction.startPrice + " kr";
+    document.getElementById("detailDescription")!.innerHTML =
+      auction.description;
+    document.getElementById("detailCreator")!.innerHTML =
+      "Skapad av: " + auction.creator;
 
     // Visa detaljvyn
     document.getElementById("auctionDetail")?.classList.remove("hide");
@@ -258,7 +263,27 @@ function createChatHTML(bid: Bid) {
     const bidder = document.createElement("label");
     const amount = document.createElement("label");
     bidder.innerHTML = "Budgivare: " + bid.bidder;
-    amount.innerHTML = JSON.stringify(bid.amount) + " kr" + " - " + new Date(bid.time).toLocaleTimeString();
+    amount.innerHTML =
+      JSON.stringify(bid.amount) +
+      " kr" +
+      " - " +
+      new Date(bid.time).toLocaleTimeString();
     chatDiv.append(bidder, amount);
   }
 }
+
+function displayWinner(auction: Auction) {
+  const winnerDiv = document.getElementById("winner");
+  if (winnerDiv) {
+    const h3 = document.createElement("h3");
+    const h4 = document.createElement("h4");
+
+    h3.innerHTML = "vinnare :" + auction.highestBidder;
+    h4.innerHTML = "vinnande bud :" + auction.highestBid;
+    winnerDiv.append(h3, h4);
+  }
+}
+
+//utse vinnare
+//kontrollera om new bid är 1 sekund eller mindre ifrån distance
+// om det är det
