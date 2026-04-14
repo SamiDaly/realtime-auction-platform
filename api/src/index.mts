@@ -142,8 +142,7 @@ io.on("connection", (socket) => {
     }
 
     const auctions = await getAuctions();
-    //socket.emit("postAuction", auctions);
-    io.emit("postAuction", auctions);
+    socket.emit("postAuction", auctions);
   });
 
   socket.on("place bid", async (auctionId: number, bid: BidDTO) => {
