@@ -147,9 +147,15 @@ function startApp() {
 
     if (!file) return;
 
+    // Skapar en FileReader som kan läsa filen/bilden och göra om den till text
+
     const reader = new FileReader();
 
+    // När filen är färdigläst körs detta..
+
     reader.onload = () => {
+      // Bilden konverteras till en sträng
+
       const img = reader.result as string;
 
       const theNewAuction = {
@@ -165,6 +171,7 @@ function startApp() {
 
     reader.readAsDataURL(file);
   });
+
   // Lägg bud
   document.getElementById("msgform")?.addEventListener("submit", (e) => {
     e.preventDefault();
