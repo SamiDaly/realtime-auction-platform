@@ -9,8 +9,6 @@ let currentAuctionId: number | null = null;
 
 // Hero-navigation
 
-let currentAuctionId: number | null = null;
-
 document.getElementById("showLogin")?.addEventListener("click", () => {
   document.getElementById("heroView")!.style.display = "none";
   document.getElementById("loginView")!.style.display = "flex";

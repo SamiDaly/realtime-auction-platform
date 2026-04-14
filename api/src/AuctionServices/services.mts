@@ -12,6 +12,7 @@ export const createAuction = async (auction: AuctionForm) => {
 export const getAuctions = async () => {
   return await AuctionCollection.find();
 };
+
 export const placeBid = async (auction: AuctionDto, bid: BidDTO) => {
   const theAuction = await Auction.findOne({ id: auction.id });
 
