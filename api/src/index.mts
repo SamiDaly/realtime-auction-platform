@@ -71,11 +71,13 @@ io.on("connection", (socket) => {
         });
         return;
       }
+      await auction.save();
 
       const highestBid = auction.bids.reduce((max, bid) =>
         bid.amount > max.amount ? bid : max,
       );
 
+      console.log("vinnare:", highestBid);
       auction.highestBidder = highestBid.bidder;
       auction.highestBid = highestBid.amount;
 
@@ -87,7 +89,7 @@ io.on("connection", (socket) => {
 
   socket.on("getAuctions", async () => {
     const auctions = await getAuctions();
-      console.log("Antal auktioner:", auctions.length);
+    console.log("Antal auktioner:", auctions.length);
     socket.emit("postAuction", auctions);
   });
 
@@ -101,7 +103,8 @@ io.on("connection", (socket) => {
       const foundChat: BidDTO[] = foundAuction.bids;
       console.log("hittade chatten", foundChat);
       if (foundChat) {
-        io.to(auctionId.toString()).emit("chatHistory", foundChat);
+        // io.to(auctionId.toString()).emit("chatHistory", foundChat);
+        socket.emit("chatHistory", foundChat);
       }
     }
   });
@@ -144,6 +147,8 @@ io.on("connection", (socket) => {
 
   socket.on("place bid", async (auctionId: number, bid: BidDTO) => {
     bid.bidder = socket.data.user.username;
+
+    console.log("budare:", bid.bidder);
     const auction = await Auction.findOne({ id: auctionId });
 
     if (!auction) return;
