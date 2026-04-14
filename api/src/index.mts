@@ -98,7 +98,7 @@ io.on("connection", (socket) => {
       creator: socket.data.user.username || "andrea",
       highestBidder: null,
       endDateTime: auctionForm.endDateTime,
-      status: auctionForm.status,
+      status: "active",
       bids: [],
     } satisfies AuctionDto;
 

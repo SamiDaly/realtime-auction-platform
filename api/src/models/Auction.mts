@@ -8,7 +8,7 @@ export const auctionSchema = new Schema(
   {
     id: { type: Number, required: true },
     title: { type: String, required: true },
-    img: { type: String, required: true },
+    img: { type: String, required: false, default: "" }, // tills Sami har fixat bildhantering
     description: { type: String, required: true },
     startPrice: { type: Number, required: true },
     highestBid: { type: Number, default: 0 },
