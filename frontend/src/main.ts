@@ -1,3 +1,4 @@
+import { createCountdown, gettimeLeft } from "./countDown";
 import type { Auction } from "./Models/Auction";
 import type { AuctionForm } from "./Models/AuctionForm";
 import type { Bid } from "./Models/Bid";
@@ -5,7 +6,9 @@ import "./style.css";
 import { io } from "socket.io-client";
 
 // Hero-navigation
+
 let currentAuctionId: number | null = null;
+
 document.getElementById("showLogin")?.addEventListener("click", () => {
   document.getElementById("heroView")!.style.display = "none";
   document.getElementById("loginView")!.style.display = "flex";
@@ -88,10 +91,6 @@ function startApp() {
     auth: { token: localStorage.getItem("token") },
   });
 
-  /* const socket = io("http://localhost:3000", {
-    withCredentials: true,
-  });*/
-
   socket.on("connect", () => {
     console.log("socket:", socket.connected);
     socket.emit("getAuctions");
@@ -116,11 +115,17 @@ function startApp() {
 
     // Nytt bud i realtid
     socket.on("NewBid", (bid: Bid) => {
+      console.log("bud:", bid);
       if (typeof bid == "string") {
         alert(bid);
       } else {
         createChatHTML(bid);
       }
+    });
+
+    socket.on("displayWinner", (auction: Auction) => {
+      console.log(" vinnande Auction:", auction);
+      displayWinner(auction);
     });
 
     // Skapa auktion
@@ -136,15 +141,12 @@ function startApp() {
       const startPrice = parseInt(
         (document.getElementById("startPrice") as HTMLInputElement).value,
       );
-      /*const endDate = (document.getElementById("enddate") as HTMLInputElement)
-        .value;*/
+
       const endtime = (document.getElementById("endTime") as HTMLInputElement)
         .value;
 
       const MINUTE = 60000;
       const MinutesFromNow = new Date(Date.now() + parseInt(endtime) * MINUTE);
-
-      console.log("mins from now:", MinutesFromNow);
 
       const theNewAuction = {
         title,
@@ -153,16 +155,13 @@ function startApp() {
         startPrice,
         endDateTime: MinutesFromNow,
       } satisfies AuctionForm;
-      console.log(theNewAuction);
+
       socket.emit("createAuction", theNewAuction);
     });
     //}
 
     // Skapa HTML för en auktion
     function createAuctionHTML(auction: Auction, container: HTMLElement) {
-      const endDate = new Date(auction.endDateTime);
-      const minutesLeft = Math.floor((endDate.getTime() - Date.now()) / 60000);
-
       const auctionDiv = document.createElement("div");
       auctionDiv.id = auction.id.toString();
 
@@ -177,12 +176,11 @@ function startApp() {
       creator.innerHTML = auction.creator;
       img.src = auction.img;
       description.innerHTML = auction.description;
-      endTime.innerHTML = minutesLeft.toString() + " minutes left";
-
-      //skapa timer
-
       const joinBtn = document.createElement("button");
+
       joinBtn.innerHTML = "Join auction";
+
+      createCountdown(auction, endTime, joinBtn);
 
       joinBtn.addEventListener("click", () => {
         currentAuctionId = auction.id;
@@ -212,6 +210,7 @@ function startApp() {
 
     document.getElementById("msgform")?.addEventListener("submit", (e) => {
       e.preventDefault();
+
       const msgInput = document.getElementById("msgInput") as HTMLInputElement;
 
       const newBid = {
@@ -220,8 +219,11 @@ function startApp() {
         time: new Date(),
       } satisfies Bid;
 
+      //  currentAuction.bids.push(newBid);
       socket.emit("place bid", currentAuctionId, newBid);
     });
+
+    /*  ;*/
   });
 }
 
@@ -233,6 +235,23 @@ function createChatHTML(bid: Bid) {
     const amount = document.createElement("label");
     bidder.innerHTML = bid.bidder;
     amount.innerHTML = JSON.stringify(bid.amount);
+
     chatDiv.append(bidder, amount);
   }
 }
+
+function displayWinner(auction: Auction) {
+  const winnerDiv = document.getElementById("winner");
+  if (winnerDiv) {
+    const h3 = document.createElement("h3");
+    const h4 = document.createElement("h4");
+
+    h3.innerHTML = "vinnare :" + auction.highestBidder;
+    h4.innerHTML = "vinnande bud :" + auction.highestBid;
+    winnerDiv.append(h3, h4);
+  }
+}
+
+//utse vinnare
+//kontrollera om new bid är 1 sekund eller mindre ifrån distance
+// om det är det
