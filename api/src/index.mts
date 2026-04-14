@@ -48,6 +48,8 @@ io.use((socket, next) => {
     if (!token) return next(new Error("Unauthorized"));
     const decoded = jwt.verify(token, process.env.JWT_SECRET!);
     socket.data.user = decoded;
+
+    console.log("socket auth successful for user:", socket.data.user.username);
     next();
   } catch (error) {
     next(new Error("Invalid token"));
@@ -123,13 +125,18 @@ io.on("connection", (socket) => {
       description: auctionForm.description,
       startPrice: auctionForm.startPrice,
       highestBid: 0,
-      creator: socket.data.user.username || "andrea",
+      creator: socket.data.user.username,
       highestBidder: null,
       endDateTime: auctionForm.endDateTime,
       status: "active",
       bids: [],
     } satisfies AuctionDto;
 
+    console.log(
+      "skapare av auktion:",
+      createdAuction.creator,
+      auctionForm.title,
+    );
     await createAuction(createdAuction);
 
     const timeLeft =
@@ -147,7 +154,7 @@ io.on("connection", (socket) => {
 
   socket.on("place bid", async (auctionId: number, bid: BidDTO) => {
     bid.bidder = socket.data.user.username;
-
+    console.log("budare:", socket.data.user.username);
     console.log("budare:", bid.bidder);
     const auction = await Auction.findOne({ id: auctionId });
 
