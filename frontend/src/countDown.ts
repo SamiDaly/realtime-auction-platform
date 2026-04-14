@@ -14,7 +14,7 @@ export function createCountdown(
     let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
     let seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-    endTimeElement.innerHTML = `${minutes}:${seconds
+    endTimeElement.innerHTML = "Tid kvar: " + `${minutes}:${seconds
       .toString()
       .padStart(2, "0")}`;
 

@@ -129,6 +129,7 @@ function startApp() {
     });
 
     sorted.forEach((auction) => {
+      console.log("Auction:", auction);
       createAuctionHTML(auction, container, socket);
     });
   });
