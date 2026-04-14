@@ -211,29 +211,41 @@ function createAuctionHTML(
   creator.innerHTML = "Skapad av: " + auction.creator;
   img.src = auction.img;
   description.innerHTML = auction.description;
-
+  /*
   if (minutesLeft <= 0) {
     endTime.innerHTML = auction.highestBidder
       ? "Avslutad — Vinnare: " + auction.highestBidder
       : "Avslutad — inga bud";
   } else {
     endTime.innerHTML = minutesLeft + " minuter kvar";
-  }
+  }*/
 
   const joinBtn = document.createElement("button");
   joinBtn.innerHTML = "Buda på auktionen";
-
+  /*
   if (minutesLeft <= 0) {
     joinBtn.classList.add("hide");
-  }
+  }*/
+  createCountdown(auction, endTime, joinBtn);
 
   joinBtn.addEventListener("click", () => {
     currentAuctionId = auction.id;
     socket.emit("joinAuction", currentAuctionId.toString());
 
     // Dölj auktionslistan och formuläret
+    /*document.getElementById("auctionForm")?.classList.add("hide");
+    document.getElementById("auctions")?.classList.add("hide");*/
     document.getElementById("auctionForm")?.classList.add("hide");
-    document.getElementById("auctions")?.classList.add("hide");
+    const allAuctions = document.querySelectorAll("#auctions > div");
+    allAuctions.forEach((element) => {
+      if (element.id !== auction.id.toString()) {
+        element.classList.add("hide");
+      }
+    });
+    joinBtn.classList.add("hide");
+
+    document.getElementById("msgInput")?.classList.remove("hide");
+    document.getElementById("sendmsg")?.classList.remove("hide");
 
     // Fyll i detaljer
     document.getElementById("detailTitle")!.innerHTML = auction.title;
