@@ -98,15 +98,17 @@ io.on("connection", (socket) => {
   socket.on("joinAuction", async (auctionId: string) => {
     socket.join(auctionId);
     //console.log(`${socket.data.user.username} gick med i auktion ${auctionId}`);
-    console.log("användarnamn gick med i auktionen" + auctionId);
+    console.log(
+      socket.data.user.username + " gick med i auktionen" + auctionId,
+    );
 
     const foundAuction = await Auction.findOne({ id: +auctionId });
     if (foundAuction) {
       const foundChat: BidDTO[] = foundAuction.bids;
-      console.log("hittade chatten", foundChat);
+      // console.log("hittade chatten", foundChat);
       if (foundChat) {
-        // io.to(auctionId.toString()).emit("chatHistory", foundChat);
-        socket.emit("chatHistory", foundChat);
+        io.to(auctionId.toString()).emit("chatHistory", foundChat);
+        //socket.emit("chatHistory", foundChat);
       }
     }
   });
@@ -132,11 +134,11 @@ io.on("connection", (socket) => {
       bids: [],
     } satisfies AuctionDto;
 
-    console.log(
+    /*console.log(
       "skapare av auktion:",
       createdAuction.creator,
       auctionForm.title,
-    );
+    );*/
     await createAuction(createdAuction);
 
     const timeLeft =
