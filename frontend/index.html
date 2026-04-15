@@ -55,18 +55,18 @@
       <hr class="section-divider" />
       <form id="auctionForm">
         <label for="title">Titel:</label>
-        <input id="title" type="text" name="title" />
+        <input id="title" type="text" name="title" required />
         <label for="img">Bild:</label>
-        <input type="file" id="img" accept="image/*" />
+        <input type="file" id="img" accept="image/*" required />
        
         <label for="description">Beskrivning:</label>
-        <textarea id="description"></textarea>
+        <textarea id="description" required></textarea>
         <label for="startPrice">Startpris:</label>
-        <input id="startPrice" type="number" min="1" />
+        <input id="startPrice" type="number" min="1" required/>
        <!---- <label for="enddate">Slutdatum:</label>
         <input id="enddate" type="date" /> -->
         <label for="endTime">Minuter:</label>
-        <input id="endTime" type="number" placeholder="Antal minuter" min="1" max="4"/>
+        <input id="endTime" type="number" placeholder="Antal minuter" min="1" max="4" required/>
         <button type="submit">Skapa Auktion</button>
       </form>
       <div id="auctions"></div>
