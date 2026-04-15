@@ -6,7 +6,7 @@ import "./style.css";
 import { io, type Socket } from "socket.io-client";
 
 let currentAuctionId: number | null = null;
-
+let socket: Socket;
 // Hero-navigation
 
 document.getElementById("showLogin")?.addEventListener("click", () => {
@@ -106,7 +106,7 @@ function startApp() {
   document.body.style.backgroundColor = "#ffffff";
   document.body.style.color = "#1a1a1a";
 
-  const socket = io("http://localhost:3000", {
+  socket = io("http://localhost:3000", {
     auth: { token: localStorage.getItem("token") },
   });
 
@@ -156,7 +156,7 @@ function startApp() {
   });
 
   // Skapa auktion
-  document.getElementById("auctionForm")?.addEventListener("submit", (e) => {
+  /*document.getElementById("auctionForm")?.addEventListener("submit", (e) => {
     e.preventDefault();
 
     const title = (document.getElementById("title") as HTMLInputElement).value;
@@ -196,7 +196,7 @@ function startApp() {
     };
 
     reader.readAsDataURL(file);
-  });
+  });*/
 
   // Lägg bud
   document.getElementById("msgform")?.addEventListener("submit", (e) => {
@@ -212,6 +212,61 @@ function startApp() {
     socket.emit("place bid", currentAuctionId, newBid);
   });
 }
+/*
+document.getElementById("msgform")?.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const msgInput = document.getElementById("msgInput") as HTMLInputElement;
+
+  const newBid = {
+    bidder: "",
+    amount: parseInt(msgInput.value),
+    time: new Date(),
+  } satisfies Bid;
+
+  socket.emit("place bid", currentAuctionId, newBid);
+});*/
+
+document.getElementById("auctionForm")?.addEventListener("submit", (e) => {
+  e.preventDefault();
+
+  const title = (document.getElementById("title") as HTMLInputElement).value;
+  const imgInput = document.getElementById("img") as HTMLInputElement;
+  const file = imgInput.files?.[0];
+
+  const description = (
+    document.getElementById("description") as HTMLTextAreaElement
+  ).value;
+  const startPrice = parseInt(
+    (document.getElementById("startPrice") as HTMLInputElement).value,
+  );
+  const endtime = (document.getElementById("endTime") as HTMLInputElement)
+    .value;
+
+  const MINUTE = 60000;
+  const MinutesFromNow = new Date(Date.now() + parseInt(endtime) * MINUTE);
+
+  if (!file) return;
+  // När filen är färdigläst körs detta..
+  const reader = new FileReader();
+
+  reader.onload = () => {
+    // Bilden konverteras till en sträng
+
+    const img = reader.result as string;
+
+    const theNewAuction = {
+      title,
+      img,
+      description,
+      startPrice,
+      endDateTime: MinutesFromNow.toISOString(),
+    } satisfies AuctionForm;
+
+    socket.emit("createAuction", theNewAuction);
+  };
+
+  reader.readAsDataURL(file);
+});
 
 // Skapa HTML för en auktion
 function createAuctionHTML(
