@@ -84,7 +84,12 @@ io.on("connection", (socket) => {
       auction.highestBid = highestBid.amount;
 
       await auction.save();
-      console.log("rum jag är med i " + socket.rooms); //ser vilka rum som klienten är med i
+      console.log(
+        "rum jag är med i vinnare deltagare" +
+          socket.data.user.username +
+          " " +
+          socket.rooms,
+      ); //ser vilka rum som klienten är med i
 
       io.to(auctionId).emit("displayWinner", auction);
       socket.emit("displayWinner", auction);
@@ -99,7 +104,7 @@ io.on("connection", (socket) => {
 
   socket.on("joinAuction", async (auctionId: string) => {
     socket.join(auctionId);
-
+    console.log("rum jag är med i " + socket.rooms); //ser vilka rum som klienten är med i
     //console.log(`${socket.data.user.username} gick med i auktion ${auctionId}`);
     console.log(
       socket.data.user.username + " gick med i auktionen" + auctionId,
