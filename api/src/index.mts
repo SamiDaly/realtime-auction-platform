@@ -12,14 +12,19 @@ import type { AuctionForm } from "./type/AuctionForm.mts";
 import type { AuctionDto } from "./DTOs/AuctionDTO.mts";
 import type { BidDTO } from "./DTOs/BidDTO.mts";
 import Auction, { convertToAuctionDTO } from "./models/Auction.mts";
-import { createAuction, getAuctions, placeBid } from "./AuctionServices/services.mts";
+import {
+  createAuction,
+  getAuctions,
+  placeBid,
+} from "./AuctionServices/services.mts";
 import { bidSchema, convertToBidDTO } from "./models/Bid.mts";
 
 config();
 
 const mongoUrl = process.env.MONGO_URI;
 const port = process.env.PORT || 3000;
-if (!mongoUrl) throw new Error("Could not find connection string in the env file");
+if (!mongoUrl)
+  throw new Error("Could not find connection string in the env file");
 
 const app = express();
 const server = createServer(app);
@@ -56,39 +61,29 @@ io.use((socket, next) => {
 io.on("connection", (socket) => {
   console.log("a user connected");
 
-  function endAuction(auctionId: string) {
-    (async () => {
-      const auction = await Auction.findOne({ id: +auctionId });
+  socket.on("endauction", async (auctionId: string) => {
+    const auction = await Auction.findOne({ id: +auctionId });
+    if (!auction) return;
 
-      if (!auction) return;
+    if (auction.bids.length === 0) {
+      io.to(auctionId.toString()).emit("displayWinner", {
+        ...auction.toObject(),
+        highestBidder: "No bids",
+      });
+      return;
+    }
 
-      if (auction.bids.length === 0) {
-        io.to(auctionId.toString()).emit("displayWinner", {
-          ...auction.toObject(),
-          highestBidder: "No bids",
-        });
-        await auction.save();
-        return;
-      }
+    const highestBid = auction.bids.reduce((max, bid) =>
+      bid.amount > max.amount ? bid : max,
+    );
 
-      const highestBid = auction.bids.reduce((max, bid) => (bid.amount > max.amount ? bid : max));
+    auction.highestBidder = highestBid.bidder;
+    auction.highestBid = highestBid.amount;
 
-      console.log("vinnare:", highestBid);
-      auction.highestBidder = highestBid.bidder;
-      auction.highestBid = highestBid.amount;
-
-      await auction.save();
-      console.log(
-        "rum jag är med i vinnare deltagare" +
-          socket.data.user.username +
-          " " +
-          socket.rooms,
-      ); //ser vilka rum som klienten är med i
-
-      io.to(auctionId).emit("displayWinner", auction);
-      socket.emit("displayWinner", auction);
-    })();
-  }
+    await auction.save();
+    console.log("auktion vinnare " + auction.highestBidder);
+    io.to(auctionId.toString()).emit("displayWinner", auction);
+  });
 
   socket.on("getAuctions", async () => {
     const auctions = await getAuctions();
@@ -99,16 +94,17 @@ io.on("connection", (socket) => {
   socket.on("joinAuction", async (auctionId: string) => {
     socket.join(auctionId);
     console.log("rum jag är med i " + socket.rooms); //ser vilka rum som klienten är med i
-    //console.log(`${socket.data.user.username} gick med i auktion ${auctionId}`);
-    console.log(socket.data.user.username + " gick med i auktionen" + auctionId);
+    console.log(`${socket.data.user.username} gick med i auktion ${auctionId}`);
+    console.log(
+      socket.data.user.username + " gick med i auktionen" + auctionId,
+    );
 
     const foundAuction = await Auction.findOne({ id: +auctionId });
     if (foundAuction) {
       const foundChat: BidDTO[] = foundAuction.bids;
-      // console.log("hittade chatten", foundChat);
+
       if (foundChat) {
         io.to(auctionId.toString()).emit("chatHistory", foundChat);
-        //socket.emit("chatHistory", foundChat);
       }
     }
   });
@@ -134,20 +130,14 @@ io.on("connection", (socket) => {
       bids: [],
     } satisfies AuctionDto;
 
-    /*console.log(
+    console.log(
       "skapare av auktion:",
       createdAuction.creator,
       auctionForm.title,
-    );*/
+    );
     await createAuction(createdAuction);
 
-    const timeLeft = new Date(createdAuction.endDateTime).getTime() - Date.now();
-
-    if (timeLeft > 0) {
-      setTimeout(() => {
-        endAuction(createdAuction.id.toString());
-      }, timeLeft);
-    }
+    console.log("created auction id :", createdAuction.id.toString());
 
     const auctions = await getAuctions();
     socket.emit("postAuction", auctions);
@@ -160,7 +150,6 @@ io.on("connection", (socket) => {
     const auction = await Auction.findOne({ id: +auctionId });
 
     if (!auction) return;
-    // auction.bids.push(bid);
 
     const auctionDTO = convertToAuctionDTO(auction);
     const newBid = await placeBid(auctionDTO, bid);
