@@ -112,6 +112,7 @@ function startApp() {
 
   socket.on("connect", () => {
     console.log("socket:", socket.connected);
+
     socket.emit("getAuctions");
   });
 

@@ -60,9 +60,9 @@ io.use((socket, next) => {
 io.on("connection", (socket) => {
   console.log("a user connected");
 
-  function endAuction(auctionId: number) {
+  function endAuction(auctionId: string) {
     (async () => {
-      const auction = await Auction.findOne({ id: auctionId });
+      const auction = await Auction.findOne({ id: +auctionId });
 
       if (!auction) return;
 
@@ -84,8 +84,10 @@ io.on("connection", (socket) => {
       auction.highestBid = highestBid.amount;
 
       await auction.save();
+      console.log("rum jag är med i " + socket.rooms); //ser vilka rum som klienten är med i
 
-      io.to(auctionId.toString()).emit("displayWinner", auction);
+      io.to(auctionId).emit("displayWinner", auction);
+      socket.emit("displayWinner", auction);
     })();
   }
 
@@ -97,6 +99,7 @@ io.on("connection", (socket) => {
 
   socket.on("joinAuction", async (auctionId: string) => {
     socket.join(auctionId);
+
     //console.log(`${socket.data.user.username} gick med i auktion ${auctionId}`);
     console.log(
       socket.data.user.username + " gick med i auktionen" + auctionId,
@@ -146,7 +149,7 @@ io.on("connection", (socket) => {
 
     if (timeLeft > 0) {
       setTimeout(() => {
-        endAuction(createdAuction.id);
+        endAuction(createdAuction.id.toString());
       }, timeLeft);
     }
 
@@ -154,11 +157,11 @@ io.on("connection", (socket) => {
     socket.emit("postAuction", auctions);
   });
 
-  socket.on("place bid", async (auctionId: number, bid: BidDTO) => {
+  socket.on("place bid", async (auctionId: string, bid: BidDTO) => {
     bid.bidder = socket.data.user.username;
     console.log("budare:", socket.data.user.username);
     console.log("budare:", bid.bidder);
-    const auction = await Auction.findOne({ id: auctionId });
+    const auction = await Auction.findOne({ id: +auctionId });
 
     if (!auction) return;
     // auction.bids.push(bid);
