@@ -207,7 +207,6 @@ document.getElementById("auctionForm")?.addEventListener("submit", (e) => {
 });
 
 // Skapa HTML för en auktion
-
 // Visa ett bud i chatten
 function createChatHTML(bid: Bid) {
   const chatDiv = document.getElementById("chathistory");
@@ -251,10 +250,11 @@ export function createAuctionHTML(
   const img = document.createElement("img");
   const description = document.createElement("p");
   const endTime = document.createElement("p");
+  const creatorName = auction.creator.charAt(0).toUpperCase() + auction.creator.slice(1);
 
   h2.innerHTML = auction.title;
   price.innerHTML = auction.startPrice.toString() + "kr";
-  creator.innerHTML = "Skapad av: " + auction.creator;
+  creator.innerHTML = "Skapad av: " + creatorName;
   img.src = auction.img;
   description.innerHTML = auction.description;
 
@@ -273,6 +273,12 @@ export function createAuctionHTML(
   });
 
   createCountdown(auction, endTime, joinBtn);
+
+  // Om tiden är slut, markera auktionen som avslutad och visa slutpriset
+  if (timeLeft <= 0) {
+  auctionDiv.classList.add("ended");
+  price.innerHTML = "Slutpris: " + auction.highestBid + " kr";
+}
 
   //räknare för att hålla koll på hur mycket tid som gått
   //sätt i ett intervall som kollar varje sekund

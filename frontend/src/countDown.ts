@@ -19,8 +19,15 @@ export function createCountdown(
 
     if (distance < 0) {
       clearInterval(interval);
-      endTimeElement.innerHTML = "EXPIRED";
+      if (auction.highestBidder) {
+        const winnerName = auction.highestBidder.charAt(0).toUpperCase() + auction.highestBidder.slice(1);
+        endTimeElement.innerHTML = "Vinnare: " + winnerName;
+      } else {
+        endTimeElement.innerHTML = "Ingen vinnare";
+      }
+      joinBtn.innerHTML = "Utgången auktion";
       joinBtn.disabled = true;
+      joinBtn.classList.add("expired-btn");
     }
   }, 1000);
 
