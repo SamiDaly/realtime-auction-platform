@@ -1,12 +1,13 @@
 import { createCountdown } from "./countDown";
+import { calculateMinsFromNow, createAuction, placebid } from "./services";
 import type { Auction } from "./Models/Auction";
-import type { AuctionForm } from "./Models/AuctionForm";
+
 import type { Bid } from "./Models/Bid";
 import "./style.css";
 import { io, type Socket } from "socket.io-client";
 
-let currentAuctionId: number | null = null;
 let socket: Socket;
+let currentAuctionId: number | null = null;
 // Hero-navigation
 
 document.getElementById("showLogin")?.addEventListener("click", () => {
@@ -156,17 +157,12 @@ function startApp() {
     displayWinner(auction);
   });
 }
-
+// Placera bud
 document.getElementById("msgform")?.addEventListener("submit", (e) => {
   e.preventDefault();
   const msgInput = document.getElementById("msgInput") as HTMLInputElement;
 
-  const newBid = {
-    bidder: "",
-    amount: parseInt(msgInput.value),
-    time: new Date(),
-  } satisfies Bid;
-
+  const newBid = placebid(msgInput);
   socket.emit("place bid", currentAuctionId, newBid);
 });
 
@@ -186,8 +182,7 @@ document.getElementById("auctionForm")?.addEventListener("submit", (e) => {
   const endtime = (document.getElementById("endTime") as HTMLInputElement)
     .value;
 
-  const MINUTE = 60000;
-  const MinutesFromNow = new Date(Date.now() + parseInt(endtime) * MINUTE);
+  const MinutesFromNow = calculateMinsFromNow(endtime);
 
   if (!file) return;
   // När filen är färdigläst körs detta..
@@ -198,14 +193,13 @@ document.getElementById("auctionForm")?.addEventListener("submit", (e) => {
 
     const img = reader.result as string;
 
-    const theNewAuction = {
+    const theNewAuction = createAuction(
       title,
       img,
       description,
       startPrice,
-      endDateTime: MinutesFromNow.toISOString(),
-    } satisfies AuctionForm;
-
+      MinutesFromNow,
+    );
     socket.emit("createAuction", theNewAuction);
   };
 
@@ -213,7 +207,37 @@ document.getElementById("auctionForm")?.addEventListener("submit", (e) => {
 });
 
 // Skapa HTML för en auktion
-function createAuctionHTML(
+
+// Visa ett bud i chatten
+function createChatHTML(bid: Bid) {
+  const chatDiv = document.getElementById("chathistory");
+  if (chatDiv) {
+    const bidder = document.createElement("label");
+    const amount = document.createElement("label");
+    bidder.innerHTML = "Budgivare: " + bid.bidder;
+    amount.innerHTML =
+      JSON.stringify(bid.amount) +
+      " kr" +
+      " - " +
+      new Date(bid.time).toLocaleTimeString();
+    chatDiv.append(bidder, amount);
+  }
+}
+
+function displayWinner(auction: Auction) {
+  const winnerDiv = document.getElementById("winner");
+  if (winnerDiv) {
+    winnerDiv.innerHTML = "";
+    const h3 = document.createElement("h3");
+    const h4 = document.createElement("h4");
+
+    h3.innerHTML = "vinnare :" + auction.highestBidder;
+    h4.innerHTML = "vinnande bud :" + auction.highestBid;
+    winnerDiv.append(h3, h4);
+  }
+}
+
+export function createAuctionHTML(
   auction: Auction,
   container: HTMLElement,
   socket: Socket,
@@ -249,6 +273,21 @@ function createAuctionHTML(
   });
 
   createCountdown(auction, endTime, joinBtn);
+
+  //räknare för att hålla koll på hur mycket tid som gått
+  //sätt i ett intervall som kollar varje sekund
+
+  //skicka vinnaren till backend
+  let endDateTime = endDate.getTime();
+  let interval = setInterval(() => {
+    let timeLeft = endDateTime - Date.now();
+    console.log(timeLeft);
+    if (timeLeft <= 0) {
+      console.log(timeLeft);
+      socket.emit("endauction", auction.id.toString());
+      clearInterval(interval);
+    }
+  }, 1000);
 
   if (timeLeft <= 0) {
     auctionDiv.classList.add("ended");
@@ -286,33 +325,4 @@ function createAuctionHTML(
 
   auctionDiv.append(h2, img, price, description, creator, endTime, joinBtn);
   container.append(auctionDiv);
-}
-
-// Visa ett bud i chatten
-function createChatHTML(bid: Bid) {
-  const chatDiv = document.getElementById("chathistory");
-  if (chatDiv) {
-    const bidder = document.createElement("label");
-    const amount = document.createElement("label");
-    bidder.innerHTML = "Budgivare: " + bid.bidder;
-    amount.innerHTML =
-      JSON.stringify(bid.amount) +
-      " kr" +
-      " - " +
-      new Date(bid.time).toLocaleTimeString();
-    chatDiv.append(bidder, amount);
-  }
-}
-
-function displayWinner(auction: Auction) {
-  const winnerDiv = document.getElementById("winner");
-  if (winnerDiv) {
-    winnerDiv.innerHTML = "";
-    const h3 = document.createElement("h3");
-    const h4 = document.createElement("h4");
-
-    h3.innerHTML = "vinnare :" + auction.highestBidder;
-    h4.innerHTML = "vinnande bud :" + auction.highestBid;
-    winnerDiv.append(h3, h4);
-  }
 }
