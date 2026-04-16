@@ -1,4 +1,4 @@
-import { createCountdown, formatEndDateTime } from "./countDown";
+import { createCountdown } from "./countDown";
 import { calculateMinsFromNow, createAuction, placebid } from "./services";
 import type { Auction } from "./Models/Auction";
 
