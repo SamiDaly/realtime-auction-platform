@@ -40,6 +40,7 @@ const io = new Server(server, {
     origin: "http://localhost:5173",
     credentials: true,
   },
+    maxHttpBufferSize: 50 * 1024 * 1024,
 });
 
 // Socket auth — verifierar JWT vid anslutning
