@@ -224,9 +224,6 @@ function displayWinner(auction: Auction) {
   console.log("displayWinner kördes"); //ta bort
   document.querySelector(".popup")?.classList.remove("hide");
   document.querySelector("#auctionDetail")?.classList.add("blur");
-  const detailText = document.querySelector(".detailText"); //ta ev bort
-  const winnerparagraph = document.createElement("p"); // ta ev bort
-  if (winnerparagraph) winnerparagraph.textContent = ""; // ta ev bort
 
   const winnerDiv = document.getElementById("winner");
   if (winnerDiv) {
@@ -247,8 +244,6 @@ function displayWinner(auction: Auction) {
     winnerDiv.classList.remove("hide");
     winnerDiv.append(h3, p);
   }
-  winnerparagraph.textContent = "vinnare:" + auction.highestBidder; //ta ev bort
-  detailText?.appendChild(winnerparagraph); //ta ev bort
 }
 
 export function createAuctionHTML(
@@ -265,7 +260,8 @@ export function createAuctionHTML(
   const img = document.createElement("img");
   const description = document.createElement("p");
   const endTime = document.createElement("p");
-  const creatorName = auction.creator.charAt(0).toUpperCase() + auction.creator.slice(1);
+  const creatorName =
+    auction.creator.charAt(0).toUpperCase() + auction.creator.slice(1);
 
   h2.innerHTML = auction.title;
   price.innerHTML = auction.startPrice.toString() + "kr";
@@ -284,9 +280,9 @@ export function createAuctionHTML(
 
   // Om tiden är slut, markera auktionen som avslutad och visa slutpriset
   if (timeLeft <= 0) {
-  auctionDiv.classList.add("ended");
-  price.innerHTML = "Slutpris: " + auction.highestBid + " kr";
-}
+    auctionDiv.classList.add("ended");
+    price.innerHTML = "Slutpris: " + auction.highestBid + " kr";
+  }
 
   //räknare för att hålla koll på hur mycket tid som gått
   //sätt i ett intervall som kollar varje sekund
