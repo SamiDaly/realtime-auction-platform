@@ -187,6 +187,7 @@ document.getElementById("auctionForm")?.addEventListener("submit", (e) => {
   const MAX_SIZE = 10 * 1024 * 1024;
 
   if (file.size > MAX_SIZE) {
+    error.classList.remove("hide");
     error.textContent = "Välj en bild under 10 MB";
     return;
   }
@@ -230,7 +231,6 @@ function createChatHTML(bid: Bid) {
 }
 
 function displayWinner(auction: Auction) {
-  console.log("displayWinner kördes"); //ta bort
   document.querySelector(".popup")?.classList.remove("hide");
   document.querySelector("#auctionDetail")?.classList.add("blur");
 

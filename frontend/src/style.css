@@ -217,15 +217,7 @@ form button:hover {
   margin-bottom: 2rem;
 }
 
-/* Skapa auktion-formuläret */
-/*
-#auctionForm {
-  display: grid;
-  grid-template-columns: 1fr  1fr ;
-  gap: 1.5rem;
-  max-width: 100vw;
-}
-*/
+
 
 #auctionFormContainer {  
   display: flex; 
@@ -239,7 +231,6 @@ form button:hover {
   
   #auctionForm { 
   display: grid; 
-  /* grid-template-columns: repeat(2, 1fr); */
   grid-template-columns: 0.5fr 2.5fr;
   gap: 1.8rem; 
   max-width: 700px; 
@@ -256,6 +247,14 @@ form button:hover {
 #auctionForm label {
   font-size: 1rem;
   margin-bottom: 0.25rem;
+  display: block;
+}
+
+#auctionForm .error{
+  font-size: 0.9rem;
+  color: #f12929;
+
+ 
   display: block;
 }
 
