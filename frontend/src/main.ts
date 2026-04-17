@@ -47,30 +47,39 @@ document.getElementById("backToAuctions")?.addEventListener("click", () => {
 });
 
 // Register
-document.getElementById("registerForm")?.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const name = (document.getElementById("registerName") as HTMLInputElement).value;
-  const email = (document.getElementById("registerEmail") as HTMLInputElement).value;
-  const password = (document.getElementById("registerPassword") as HTMLInputElement).value;
+document
+  .getElementById("registerForm")
+  ?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const name = (document.getElementById("registerName") as HTMLInputElement)
+      .value;
+    const email = (document.getElementById("registerEmail") as HTMLInputElement)
+      .value;
+    const password = (
+      document.getElementById("registerPassword") as HTMLInputElement
+    ).value;
 
-  const res = await fetch("http://localhost:3000/api/auth/register", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ name, email, password }),
+    const res = await fetch("http://localhost:3000/api/auth/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, email, password }),
+    });
+
+    const data = await res.json();
+    if (data.token) {
+      localStorage.setItem("token", data.token);
+      startApp();
+    }
   });
-
-  const data = await res.json();
-  if (data.token) {
-    localStorage.setItem("token", data.token);
-    startApp();
-  }
-});
 
 // Login
 document.getElementById("loginForm")?.addEventListener("submit", async (e) => {
   e.preventDefault();
-  const email = (document.getElementById("loginEmail") as HTMLInputElement).value;
-  const password = (document.getElementById("loginPassword") as HTMLInputElement).value;
+  const email = (document.getElementById("loginEmail") as HTMLInputElement)
+    .value;
+  const password = (
+    document.getElementById("loginPassword") as HTMLInputElement
+  ).value;
 
   const res = await fetch("http://localhost:3000/api/auth/login", {
     method: "POST",
@@ -162,9 +171,14 @@ document.getElementById("auctionForm")?.addEventListener("submit", (e) => {
   const error = document.getElementById("error") as HTMLElement;
   const file = imgInput.files?.[0];
 
-  const description = (document.getElementById("description") as HTMLTextAreaElement).value;
-  const startPrice = parseInt((document.getElementById("startPrice") as HTMLInputElement).value);
-  const endtime = (document.getElementById("endTime") as HTMLInputElement).value;
+  const description = (
+    document.getElementById("description") as HTMLTextAreaElement
+  ).value;
+  const startPrice = parseInt(
+    (document.getElementById("startPrice") as HTMLInputElement).value,
+  );
+  const endtime = (document.getElementById("endTime") as HTMLInputElement)
+    .value;
 
   const MinutesFromNow = calculateMinsFromNow(endtime);
 
@@ -185,7 +199,13 @@ document.getElementById("auctionForm")?.addEventListener("submit", (e) => {
 
     const img = reader.result as string;
 
-    const theNewAuction = createAuction(title, img, description, startPrice, MinutesFromNow);
+    const theNewAuction = createAuction(
+      title,
+      img,
+      description,
+      startPrice,
+      MinutesFromNow,
+    );
     socket.emit("createAuction", theNewAuction);
   };
 
@@ -200,7 +220,11 @@ function createChatHTML(bid: Bid) {
     const bidder = document.createElement("label");
     const amount = document.createElement("label");
     bidder.innerHTML = "Budgivare: " + bid.bidder;
-    amount.innerHTML = JSON.stringify(bid.amount) + " kr" + " - " + new Date(bid.time).toLocaleTimeString();
+    amount.innerHTML =
+      JSON.stringify(bid.amount) +
+      " kr" +
+      " - " +
+      new Date(bid.time).toLocaleTimeString();
     chatDiv.append(bidder, amount);
   }
 }
@@ -209,9 +233,6 @@ function displayWinner(auction: Auction) {
   console.log("displayWinner kördes"); //ta bort
   document.querySelector(".popup")?.classList.remove("hide");
   document.querySelector("#auctionDetail")?.classList.add("blur");
-  const detailText = document.querySelector(".detailText"); //ta ev bort
-  const winnerparagraph = document.createElement("p"); // ta ev bort
-  if (winnerparagraph) winnerparagraph.textContent = ""; // ta ev bort
 
   const winnerDiv = document.getElementById("winner");
   if (winnerDiv) {
@@ -221,8 +242,11 @@ function displayWinner(auction: Auction) {
     if (auction.bids.length === 0) {
       h3.innerHTML = "inga bud, auktionen avslutad!";
     } else {
-      h3.innerHTML = "vinnare  av auctionen: " + auction.highestBidder;
-      p.innerHTML = "vinnande bud :" + auction.highestBid;
+      h3.innerHTML =
+        "Vinnare  av auctionen: " +
+        auction.highestBidder.charAt(0).toUpperCase() +
+        auction.highestBidder.slice(1);
+      p.innerHTML = "Vinnande bud :" + auction.highestBid;
     }
     document.querySelector(".close")?.addEventListener("click", () => {
       document.querySelector(".popup")?.classList.add("hide");
@@ -232,11 +256,13 @@ function displayWinner(auction: Auction) {
     winnerDiv.classList.remove("hide");
     winnerDiv.append(h3, p);
   }
-  winnerparagraph.textContent = "vinnare:" + auction.highestBidder; //ta ev bort
-  detailText?.appendChild(winnerparagraph); //ta ev bort
 }
 
-export function createAuctionHTML(auction: Auction, container: HTMLElement, socket: Socket) {
+export function createAuctionHTML(
+  auction: Auction,
+  container: HTMLElement,
+  socket: Socket,
+) {
   const auctionDiv = document.createElement("div");
   auctionDiv.id = auction.id.toString();
 
@@ -246,7 +272,8 @@ export function createAuctionHTML(auction: Auction, container: HTMLElement, sock
   const img = document.createElement("img");
   const description = document.createElement("p");
   const endTime = document.createElement("p");
-  const creatorName = auction.creator.charAt(0).toUpperCase() + auction.creator.slice(1);
+  const creatorName =
+    auction.creator.charAt(0).toUpperCase() + auction.creator.slice(1);
 
   h2.innerHTML = auction.title;
   price.innerHTML = auction.startPrice.toString() + "kr";
@@ -265,9 +292,9 @@ export function createAuctionHTML(auction: Auction, container: HTMLElement, sock
 
   // Om tiden är slut, markera auktionen som avslutad och visa slutpriset
   if (timeLeft <= 0) {
-  auctionDiv.classList.add("ended");
-  price.innerHTML = "Slutpris: " + auction.highestBid + " kr";
-}
+    auctionDiv.classList.add("ended");
+    price.innerHTML = "Slutpris: " + auction.highestBid + " kr";
+  }
 
   //räknare för att hålla koll på hur mycket tid som gått
   //sätt i ett intervall som kollar varje sekund
@@ -299,12 +326,17 @@ export function createAuctionHTML(auction: Auction, container: HTMLElement, sock
 
     // Fyll i detaljer
     document.getElementById("detailTitle")!.innerHTML = auction.title;
-    (document.getElementById("detailImg") as HTMLImageElement).src = auction.img;
-    document.getElementById("detailPrice")!.innerHTML = auction.startPrice + " kr";
-    document.getElementById("detailDescription")!.innerHTML = auction.description;
-    document.getElementById("detailCreator")!.innerHTML = "Skapad av: " + auction.creator;
+    (document.getElementById("detailImg") as HTMLImageElement).src =
+      auction.img;
+    document.getElementById("detailPrice")!.innerHTML =
+      auction.startPrice + " kr";
+    document.getElementById("detailDescription")!.innerHTML =
+      auction.description;
+    document.getElementById("detailCreator")!.innerHTML =
+      "Skapad av: " + auction.creator;
     const timedetails = document.getElementById("detailTime");
-    if (timedetails && sendmsgBtn) createCountdown(auction, timedetails, sendmsgBtn);
+    if (timedetails && sendmsgBtn)
+      createCountdown(auction, timedetails, sendmsgBtn);
 
     // Visa detaljvyn
     document.getElementById("auctionDetail")?.classList.remove("hide");
