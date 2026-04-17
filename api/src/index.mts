@@ -40,7 +40,7 @@ const io = new Server(server, {
     origin: "http://localhost:5173",
     credentials: true,
   },
-    maxHttpBufferSize: 50 * 1024 * 1024,
+  maxHttpBufferSize: 50 * 1024 * 1024,
 });
 
 // Socket auth — verifierar JWT vid anslutning
@@ -82,30 +82,25 @@ io.on("connection", (socket) => {
     auction.highestBid = highestBid.amount;
 
     await auction.save();
-    console.log("auktion vinnare " + auction.highestBidder);
+
     io.to(auctionId.toString()).emit("displayWinner", auction);
   });
 
   socket.on("getAuctions", async () => {
     const auctions = await getAuctions();
-    console.log("Antal auktioner:", auctions.length);
+
     socket.emit("postAuction", auctions);
   });
 
   socket.on("joinAuction", async (auctionId: string) => {
     socket.join(auctionId);
-    console.log("rum jag är med i " + socket.rooms); //ser vilka rum som klienten är med i
-    console.log(`${socket.data.user.username} gick med i auktion ${auctionId}`);
-    console.log(
-      socket.data.user.username + " gick med i auktionen" + auctionId,
-    );
 
     const foundAuction = await Auction.findOne({ id: +auctionId });
     if (foundAuction) {
       const foundChat: BidDTO[] = foundAuction.bids;
 
       if (foundChat) {
-        io.to(auctionId.toString()).emit("chatHistory", foundChat);
+        socket.emit("chatHistory", foundChat);
       }
     }
   });
@@ -125,14 +120,7 @@ io.on("connection", (socket) => {
       bids: [],
     } satisfies AuctionDto;
 
-    console.log(
-      "skapare av auktion:",
-      createdAuction.creator,
-      auctionForm.title,
-    );
     await createAuction(createdAuction);
-
-    console.log("created auction id :", createdAuction.id.toString());
 
     const auctions = await getAuctions();
     socket.emit("postAuction", auctions);
@@ -140,8 +128,7 @@ io.on("connection", (socket) => {
 
   socket.on("place bid", async (auctionId: string, bid: BidDTO) => {
     bid.bidder = socket.data.user.username;
-    console.log("budare:", socket.data.user.username);
-    console.log("budare:", bid.bidder);
+
     const auction = await Auction.findOne({ id: +auctionId });
 
     if (!auction) return;

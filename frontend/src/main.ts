@@ -246,7 +246,7 @@ function displayWinner(auction: Auction) {
         "Vinnare  av auctionen: " +
         auction.highestBidder.charAt(0).toUpperCase() +
         auction.highestBidder.slice(1);
-      p.innerHTML = "Vinnande bud :" + auction.highestBid;
+      p.innerHTML = "Vinnande bud :" + auction.highestBid + " kr";
     }
     document.querySelector(".close")?.addEventListener("click", () => {
       document.querySelector(".popup")?.classList.add("hide");
