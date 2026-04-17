@@ -48,40 +48,60 @@
 
     <!-- Auktion-vy -->
       <div id="auctionSection" style="display: none">
+
       <div class="auction-header">
         <h1>Skapa Auktion</h1>
       <button id="logoutBtn" class="btn-outline">Logga ut</button>
       </div>
+   
       <hr class="section-divider" />
+
+      <div id="auctionContainer">
+        <div id="auctionFormContainer">
       <form id="auctionForm">
+
         <label for="title">Titel:</label>
         <input id="title" type="text" name="title" required />
+        
+        
         <label for="img">Bild:</label>
         <input type="file" id="img" accept="image/*" required />
-       
+        
+    
         <label for="description">Beskrivning:</label>
         <textarea id="description" required></textarea>
+      
         <label for="startPrice">Startpris:</label>
         <input id="startPrice" type="number" min="1" required/>
-       <!---- <label for="enddate">Slutdatum:</label>
-        <input id="enddate" type="date" /> -->
+     
         <label for="endTime">Minuter:</label>
-        <input id="endTime" type="number" placeholder="Antal minuter" min="1" max="4" required/>
+        <input id="endTime" type="number" placeholder="Antal minuter" min="1" max="5" required/>
+          
+      
         <button type="submit">Skapa Auktion</button>
       </form>
+</div>
+
       <div id="auctions"></div>
       </div>
+      
 
     <!-- Auktion Detalj-vy -->
-      <div id="auctionDetail" class="hide">
+   
+      <div id="auctionDetail" class="hide ">
       <div class="detail-layout">
       <div class="detail-info">
       <h2 id="detailTitle"></h2>
       <img id="detailImg" />
+
+      <div class="detailText">
       <h3 id="detailPrice"></h3>
       <p id="detailDescription"></p>
       <h4 id="detailCreator"></h4>
       <p id="detailTime"></p>
+      </div>
+
+
       </div>
       <div class="detail-bidding">
 
@@ -91,14 +111,18 @@
           <input id="msgInput" type="number" placeholder="Ange bud i kr"/>
           <button id="sendmsg" type="submit" class="hide">Lägg bud</button>
         </form>
-     
-      <button id="backToAuctions" class="btn-link" style="color: #1a1a1a;">Tillbaka till auktioner</button>
-      
+    <button id="backToAuctions" class="back-button" style="color: #1a1a1a;">Tillbaka till auktioner</button>
+</div>
+</div>
 
 
-
-      <div id="winner"></div>
+    
+     <!----  <div id="winner"></div> -->
     </div>
+     <div class="popup hide">
+     <div id="winner"></div>
+     <button class="close">OK</button>
+     </div>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

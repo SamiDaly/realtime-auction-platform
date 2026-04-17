@@ -43,8 +43,7 @@ document.getElementById("backFromRegister")?.addEventListener("click", () => {
 
 document.getElementById("backToAuctions")?.addEventListener("click", () => {
   document.getElementById("auctionDetail")?.classList.add("hide");
-  document.getElementById("auctionForm")?.classList.remove("hide");
-  document.getElementById("auctions")?.classList.remove("hide");
+  document.getElementById("auctionContainer")?.classList.remove("hide");
 });
 
 // Register
@@ -131,7 +130,6 @@ function startApp() {
     });
 
     sorted.forEach((auction) => {
-      console.log("Auction:", auction);
       createAuctionHTML(auction, container, socket);
     });
   });
@@ -153,7 +151,6 @@ function startApp() {
   });
 
   socket.on("displayWinner", (auction: Auction) => {
-    console.log(" vinnande Auction:", auction);
     displayWinner(auction);
   });
 }
@@ -225,16 +222,34 @@ function createChatHTML(bid: Bid) {
 }
 
 function displayWinner(auction: Auction) {
+  console.log("displayWinner kördes"); //ta bort
+  document.querySelector(".popup")?.classList.remove("hide");
+  document.querySelector("#auctionDetail")?.classList.add("blur");
+  const detailText = document.querySelector(".detailText"); //ta ev bort
+  const winnerparagraph = document.createElement("p"); // ta ev bort
+  if (winnerparagraph) winnerparagraph.textContent = ""; // ta ev bort
+
   const winnerDiv = document.getElementById("winner");
   if (winnerDiv) {
     winnerDiv.innerHTML = "";
     const h3 = document.createElement("h3");
-    const h4 = document.createElement("h4");
+    const p = document.createElement("p");
+    if (auction.bids.length === 0) {
+      h3.innerHTML = "inga bud, auktionen avslutad!";
+    } else {
+      h3.innerHTML = "vinnare  av auctionen: " + auction.highestBidder;
+      p.innerHTML = "vinnande bud :" + auction.highestBid;
+    }
+    document.querySelector(".close")?.addEventListener("click", () => {
+      document.querySelector(".popup")?.classList.add("hide");
+      document.querySelector("#auctionDetail")?.classList.remove("blur");
+    });
 
-    h3.innerHTML = "vinnare :" + auction.highestBidder;
-    h4.innerHTML = "vinnande bud :" + auction.highestBid;
-    winnerDiv.append(h3, h4);
+    winnerDiv.classList.remove("hide");
+    winnerDiv.append(h3, p);
   }
+  winnerparagraph.textContent = "vinnare:" + auction.highestBidder; //ta ev bort
+  detailText?.appendChild(winnerparagraph); //ta ev bort
 }
 
 export function createAuctionHTML(
@@ -265,13 +280,6 @@ export function createAuctionHTML(
   const endDate = new Date(auction.endDateTime);
   const timeLeft = endDate.getTime() - Date.now();
 
-  // Console log för att debugga datum och tid
-  console.log("DEBUG:", {
-    raw: auction.endDateTime,
-    parsed: endDate,
-    timeLeft,
-  });
-
   createCountdown(auction, endTime, joinBtn);
 
   //räknare för att hålla koll på hur mycket tid som gått
@@ -281,9 +289,8 @@ export function createAuctionHTML(
   let endDateTime = endDate.getTime();
   let interval = setInterval(() => {
     let timeLeft = endDateTime - Date.now();
-    console.log(timeLeft);
+
     if (timeLeft <= 0) {
-      console.log(timeLeft);
       socket.emit("endauction", auction.id.toString());
       clearInterval(interval);
     }
@@ -297,9 +304,7 @@ export function createAuctionHTML(
     currentAuctionId = auction.id;
     socket.emit("joinAuction", currentAuctionId.toString());
 
-    // Dölj auktionslistan och formuläret
-    document.getElementById("auctionForm")?.classList.add("hide");
-    document.getElementById("auctions")?.classList.add("hide");
+    document.getElementById("auctionContainer")?.classList.add("hide");
 
     const sendmsgBtn = document.getElementById("sendmsg") as HTMLButtonElement;
     document.getElementById("msgInput")?.classList.remove("hide");

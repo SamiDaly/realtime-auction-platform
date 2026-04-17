@@ -109,12 +109,6 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("leaveAuction", (auctionId: string) => {
-    socket.leave(auctionId);
-
-    console.log(`${socket.data.user.username} lämnade auktion ${auctionId}`);
-  });
-
   socket.on("createAuction", async (auctionForm: AuctionForm) => {
     const createdAuction = {
       id: Date.now(),
