@@ -15,9 +15,3 @@ export const loginUser = async (email: string, password: string) => {
 
   return { user: convertToDto(user), token };
 };
-// 1. Hämta user från DB via email
-// 2. Kontrollera att user finns
-// 3. Jämför lösenord med bcrypt.compare()
-// 4. Skapa JWT token med username + email
-// 5. Token signeras med JWT_SECRET
-// 6. Returnera userinfo + token

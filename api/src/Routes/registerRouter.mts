@@ -18,8 +18,3 @@ registerRouter.post("/register", async (req, res) => {
     res.status(500).json({ message: "error", error });
   }
 });
-// 1. Tar emot name, email och password
-// 2. Validerar att alla fält är ifyllda
-// 3. Anropar registerUser()
-// 4. Returnerar userDTO
-// 5. Skickar även JWT token
